@@ -60,27 +60,82 @@ export const historicalEvents = [
         duration: { start: -911, end: -609, label: "Impero Neo-Assiro (911 a.C. - 609 a.C.)" }
     },
     {
+        id: "greek-first-colonization",
+        title: "Prima Colonizzazione Greca: Egeo e Asia Minore",
+        year: -900,
+        eraText: "900 a.C.",
+        description: "Dopo la crisi dell'eta micenea e durante l'eta oscura greca, gruppi greci si spostano e consolidano insediamenti nell'Egeo e sulle coste dell'Asia Minore. Questa prima colonizzazione riguarda soprattutto Ioni, Eoli e Dori: non e ancora la grande espansione mediterranea, ma prepara la futura rete delle poleis greche.",
+        groups: [
+            { name: "Greci ionici", color: "#3b82f6", countries: ["Ionia", "Greek city-states", "Aegean"] },
+            { name: "Greci eolici", color: "#06b6d4", countries: ["Aeolis", "Greek city-states"] },
+            { name: "Greci dorici", color: "#8b5cf6", countries: ["Doris", "Dorian", "Rhodes", "Crete"] },
+            { name: "Vicino Oriente fenicio", color: "#ec4899", countries: ["Phoenicia", "Canaan"] }
+        ],
+        labels: [
+            { text: "Ionia", pos: [38.5, 27.0], color: "#3b82f6" },
+            { text: "Eolide", pos: [39.3, 26.8], color: "#06b6d4" },
+            { text: "Dori: Creta e Rodi", pos: [35.8, 26.0], color: "#8b5cf6" },
+            { text: "Atene e poleis greche", pos: [38.0, 23.7], color: "#3b82f6" },
+            { text: "Tiro e Sidone", pos: [33.6, 35.5], color: "#ec4899" }
+        ],
+        bounds: [[32, 18], [42, 38]],
+        duration: { start: -1100, end: -800, label: "Prima colonizzazione greca (XI-IX sec. a.C.)" }
+    },
+    {
         id: "phoenicians-mediterranean",
-        title: "I Fenici e la Colonizzazione del Mediterraneo",
+        title: "Fenici e Cartaginesi nel Mediterraneo Occidentale",
         year: -700,
         eraText: "700 a.C.",
-        description: "I Fenici, grandi navigatori e mercanti originari del Libano (Tiro, Sidone, Biblo), colonizzano le coste del Mediterraneo. Fondano importanti empori e colonie, tra cui Cartagine in Nord Africa. Questo periodo vede anche la contemporanea espansione coloniale greca nell'Italia meridionale (Magna Grecia).",
+        description: "I Fenici, grandi navigatori e mercanti originari di Tiro, Sidone e Biblo, costruiscono una rete di empori e colonie lungo le rotte del Mediterraneo. L'influenza fenicia e poi punica comprende Cartagine e altri centri dell'Africa settentrionale, parte della Sardegna, la Sicilia occidentale, Malta, le Baleari e varie aree costiere della Spagna meridionale e orientale. Non si tratta di un impero territoriale continuo, ma di una rete marittima di citta, scali e zone di influenza.",
         groups: [
-            { name: "Fenici e Cartaginesi", color: "#ec4899", countries: ["Canaan", "Carthage"] }, // Rosa
-            { name: "Greci (Patria e Colonie)", color: "#3b82f6", countries: ["Greek city-states", "Thrace"] }, // Blu
-            { name: "Impero Neo-Assiro", color: "#10b981", countries: ["Assyria"] }, // Verde
+            { name: "Fenici d'Oriente", color: "#ec4899", countries: ["Phoenicia", "Canaan", "Tyre", "Sidon"] }, // Rosa
+            { name: "Area fenicio-punica occidentale", color: "#f43f5e", countries: ["Carthage", "Carthaginian", "Sardinia", "Sicily", "Spain", "Balearic", "North Africa"] },
+            { name: "Colonie greche contemporanee", color: "#3b82f6", countries: ["Greek city-states", "Sicily", "Magna Graecia"] }, // Blu
             { name: "Egitto (XXVI Dinastia)", color: "#f59e0b", countries: ["Egypt"] } // Oro
         ],
         labels: [
             { text: "Fenici (Tiro e Sidone)", pos: [33.6, 35.6], color: "#ec4899" },
             { text: "Cartagine (Fenici)", pos: [36.8, 10.2], color: "#ec4899" },
+            { text: "Utica", pos: [37.05, 10.1], color: "#f43f5e" },
+            { text: "Nora e Sulcis", pos: [39.0, 8.8], color: "#f43f5e" },
+            { text: "Mozia e Palermo", pos: [38.0, 12.5], color: "#f43f5e" },
+            { text: "Malta", pos: [35.9, 14.4], color: "#f43f5e" },
+            { text: "Gadir / Cadice", pos: [36.5, -6.3], color: "#f43f5e" },
+            { text: "Ibiza e Baleari", pos: [39.0, 1.5], color: "#f43f5e" },
+            { text: "Nord Africa punico", pos: [34.5, 3.0], color: "#f43f5e" },
             { text: "Magna Grecia", pos: [38.2, 16.0], color: "#3b82f6" },
             { text: "Città-stato Greche", pos: [38.7, 22.2], color: "#3b82f6" },
             { text: "Impero Neo-Assiro", pos: [36.2, 42.1], color: "#10b981" },
             { text: "Regno d'Egitto", pos: [26.8, 30.8], color: "#f59e0b" }
         ],
-        bounds: [[28, -10], [48, 45]], // Mediterraneo
+        bounds: [[29, -10], [43, 38]], // Mediterraneo fenicio-punico
         duration: { start: -1200, end: -539, label: "Espansione Civiltà Fenicia (1200 a.C. - 539 a.C.)" }
+    },
+    {
+        id: "greek-second-colonization",
+        title: "Seconda Colonizzazione Greca: Mediterraneo e Mar Nero",
+        year: -650,
+        eraText: "650 a.C.",
+        description: "Tra VIII e VI secolo a.C. molte poleis greche fondano apoikiai, cioe colonie autonome, per commercio, accesso a terre e metalli, pressione demografica e conflitti interni. Nascono reti greche in Sicilia, Italia meridionale, Francia meridionale, Spagna nord-orientale, coste dell'Egeo settentrionale e Mar Nero. E la fase della Magna Grecia e delle grandi colonie siceliote.",
+        groups: [
+            { name: "Madrepatria greca", color: "#3b82f6", countries: ["Greek city-states", "Athens", "Sparta", "Corinth"] },
+            { name: "Magna Grecia e Sicilia greca", color: "#06b6d4", countries: ["Sicily", "Magna Graecia", "Syracuse", "Taras"] },
+            { name: "Colonie greche occidentali", color: "#8b5cf6", countries: ["Massalia", "Emporion", "Spain", "Gaul"] },
+            { name: "Colonie del Mar Nero", color: "#10b981", countries: ["Black Sea", "Byzantium", "Pontus"] }
+        ],
+        labels: [
+            { text: "Corinto, Atene, Sparta", pos: [37.8, 22.7], color: "#3b82f6" },
+            { text: "Siracusa", pos: [37.1, 15.3], color: "#06b6d4" },
+            { text: "Crotone e Sibari", pos: [39.0, 16.6], color: "#06b6d4" },
+            { text: "Taranto", pos: [40.5, 17.2], color: "#06b6d4" },
+            { text: "Napoli / Cuma", pos: [40.9, 14.2], color: "#06b6d4" },
+            { text: "Massalia", pos: [43.3, 5.4], color: "#8b5cf6" },
+            { text: "Emporion", pos: [42.1, 3.1], color: "#8b5cf6" },
+            { text: "Bisanzio", pos: [41.0, 29.0], color: "#10b981" },
+            { text: "Mar Nero greco", pos: [44.5, 34.0], color: "#10b981" }
+        ],
+        bounds: [[33, -8], [47, 42]],
+        duration: { start: -800, end: -550, label: "Seconda colonizzazione greca (VIII-VI sec. a.C.)" }
     },
     {
         id: "alexander-empire",

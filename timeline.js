@@ -1,4 +1,4 @@
-import { historicalEvents } from './events.js';
+import { historicalEvents } from './events.js?v=20260528-colonies';
 
 // Estremi temporali della timeline principale
 const MIN_YEAR = -3100;

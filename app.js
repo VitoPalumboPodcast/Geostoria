@@ -1,6 +1,6 @@
 import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map.js';
 import { initializeTimeline, pausePlayback } from './timeline.js';
-import { historicalEvents } from './events.js';
+import { historicalEvents } from './events.js?v=20260528-colonies';
 
 const eventPanel = document.getElementById('event-panel');
 const eventEra = document.getElementById('event-era');
