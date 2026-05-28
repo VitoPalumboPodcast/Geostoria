@@ -130,25 +130,41 @@ body {
 }
 
 .map-text-label {
+    --label-halo: rgba(0, 0, 0, 0.95);
+    --label-glow: rgba(0, 0, 0, 0.72);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 118px;
-    max-width: 168px;
-    padding: 3px 7px;
-    border: 1px solid currentColor;
+    min-width: 138px;
+    max-width: 190px;
+    min-height: 28px;
+    padding: 5px 9px;
+    border: 2px solid currentColor;
     border-radius: 6px;
-    background: rgba(5, 8, 15, 0.58);
-    font-size: 0.68rem;
-    font-weight: 700;
-    line-height: 1.15;
+    background: rgba(5, 8, 15, 0.78);
+    font-size: 0.78rem;
+    font-weight: 800;
+    line-height: 1.12;
     text-align: center;
     white-space: normal;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    text-shadow:
+        0 1px 0 var(--label-halo),
+        1px 0 0 var(--label-halo),
+        0 -1px 0 var(--label-halo),
+        -1px 0 0 var(--label-halo),
+        0 2px 6px var(--label-glow);
+    box-shadow:
+        0 3px 12px rgba(0, 0, 0, 0.32),
+        0 0 0 1px rgba(255, 255, 255, 0.18);
 }
 
 body.light-theme .map-text-label {
-    background: rgba(255, 255, 255, 0.76);
+    --label-halo: rgba(255, 255, 255, 1);
+    --label-glow: rgba(15, 23, 42, 0.24);
+    background: rgba(255, 255, 255, 0.94);
+    box-shadow:
+        0 4px 14px rgba(15, 23, 42, 0.28),
+        0 0 0 1px rgba(15, 23, 42, 0.14);
 }
 
 /* Glassmorphism utility */

@@ -277,12 +277,11 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
         // Aggiungi le scritte (etichette di testo) geografiche dell'evento corrente sulla mappa
         if (eventLabels && eventLabels.length > 0) {
             eventLabels.forEach(label => {
-                const isLight = document.body.classList.contains('light-theme');
                 const labelIcon = L.divIcon({
                     className: 'map-text-label-container',
-                    html: `<div class="map-text-label" style="border-color: ${label.color}; color: ${label.color}; text-shadow: 0 0 5px ${isLight ? 'rgba(255,255,255,0.9)' : 'rgba(0,0,0,0.9)'};">${label.text}</div>`,
-                    iconSize: [120, 30],
-                    iconAnchor: [60, 15]
+                    html: `<div class="map-text-label" style="border-color: ${label.color}; color: ${label.color};">${label.text}</div>`,
+                    iconSize: [160, 42],
+                    iconAnchor: [80, 21]
                 });
                 
                 L.marker(label.pos, { 
