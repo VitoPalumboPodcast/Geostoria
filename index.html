@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atlante Geostorico Interattivo</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome per Icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    
+    <!-- Stili Personalizzati -->
+    <link rel="stylesheet" href="style.css?v=20260528">
+</head>
+<body>
+    <div id="app-container">
+        <!-- Parte Superiore: Mappa -->
+        <main id="map-container">
+            <div id="map"></div>
+            
+            <!-- Pannello Informativo Flottante (Glassmorphism) -->
+            <div id="event-panel" class="floating-panel glass">
+                <div class="panel-header">
+                    <span id="event-era" class="badge">Caricamento...</span>
+                    <button id="close-panel-btn" title="Chiudi pannello"><i class="fas fa-times"></i></button>
+                </div>
+                <h2 id="event-title">Seleziona un evento</h2>
+                <p id="event-description">Clicca su un evento nella timeline in basso o naviga sulla mappa per scoprire la storia dei territori.</p>
+                
+                <div id="countries-list-container" class="countries-list-container hidden">
+                    <h3>Stati Coinvolti</h3>
+                    <div id="countries-list" class="countries-list"></div>
+                </div>
+            </div>
+
+            <!-- Loader Mappa -->
+            <div id="map-loader" class="loader-overlay glass hidden">
+                <div class="spinner"></div>
+                <div class="loader-text">Caricamento confini storici...</div>
+            </div>
+
+            <!-- Legenda e Stato Corrente Mappa -->
+            <div id="map-info-overlay" class="map-info glass">
+                <div id="current-year-display">Anno: <span id="year-value">-</span></div>
+                <div id="loading-indicator" class="tiny-loader hidden">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+            </div>
+        </main>
+
+        <!-- Parte Inferiore: Timeline -->
+        <footer id="timeline-section">
+            <!-- Controlli Timeline -->
+            <div id="timeline-controls" class="glass">
+                <div class="control-group">
+                    <button id="play-btn" title="Riproduci cronologia"><i class="fas fa-play"></i></button>
+                    <span class="control-divider"></span>
+                    <button id="zoom-out-btn" title="Zoom indietro timeline"><i class="fas fa-search-minus"></i></button>
+                    <button id="zoom-in-btn" title="Zoom avanti timeline"><i class="fas fa-search-plus"></i></button>
+                    <button id="reset-timeline-btn" title="Ripristina timeline"><i class="fas fa-arrows-alt-h"></i></button>
+                    <span class="control-divider"></span>
+                    <button id="theme-toggle-btn" title="Cambia tema (Chiaro/Scuro)"><i class="fas fa-sun"></i></button>
+                </div>
+                <div class="timeline-speed-control">
+                    <label for="speed-slider"><i class="fas fa-running"></i> Velocità</label>
+                    <input type="range" id="speed-slider" min="1" max="5" value="3">
+                </div>
+            </div>
+            
+            <!-- Area Timeline -->
+            <div id="timeline-wrapper">
+                <div id="timeline-drag-container">
+                    <div id="timeline-axis">
+                        <!-- Linea temporale principale -->
+                        <div class="timeline-line"></div>
+                        <!-- Evidenziazione durata degli imperi -->
+                        <div id="timeline-durations"></div>
+                        <!-- I tick temporali e i marker verranno generati dinamicamente via JS -->
+                        <div id="timeline-ticks"></div>
+                        <div id="timeline-events"></div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Leaflet JS (caricato prima per renderlo disponibile a map.js) -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    
+    <!-- Entrypoint JavaScript App (ES Modules) -->
+    <script type="module" src="app.js?v=20260528"></script>
+</body>
+</html>
