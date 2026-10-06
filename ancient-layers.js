@@ -1,4 +1,4 @@
-import {loadLocalData, isAncientPeriod, formatYear, escapeHtml, sourceAttribution, SOURCES} from './sources.js?v=20261006-layers1';
+import {loadLocalData, isAncientPeriod, formatYear, escapeHtml, sourceAttribution, SOURCES} from './sources.js?v=20261006-nation1';
 
 export function createAncientLayers(map, onStatus) {
     let currentYear = -3000;

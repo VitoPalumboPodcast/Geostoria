@@ -1,4 +1,5 @@
-import { closestHistoricalYear, loadBoundaries, SOURCES, sourceAttribution, escapeHtml } from './sources.js?v=20261006-layers1';
+import { closestHistoricalYear, loadBoundaries, SOURCES, sourceAttribution, escapeHtml, countryAliases } from './sources.js?v=20261006-nation1';
+import { loadSymbolsCatalog, selectCountrySymbols, renderCountrySymbols } from './symbols.js?v=20261006-nation1';
 
 // Chiave CARTO Basemaps limitata al dominio vitopalumbopodcast.github.io.
 const CARTO_BASEMAP_KEY = 'cb1_4c5a_1_0417a143fc768f340fec2f48';
@@ -224,7 +225,21 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
                 // Popup con nome dello stato
                 const precision = Number(feature.properties?.BORDERPRECISION);
                 const precisionLabel = ({1:'Confini approssimativi',2:'Confini moderatamente precisi',3:'Confini definiti dal diritto internazionale'})[precision];
-                layer.bindPopup(`<div class="historical-popup"><strong>${escapeHtml(name)}</strong><p>Confini: ${escapeHtml(result.dateLabel)}</p>${precisionLabel ? `<p>${precisionLabel}</p>` : ''}<p>Fonte: <a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.name}</a></p></div>`);
+                const popupHeader=`<strong>${escapeHtml(name)}</strong><p>Confini: ${escapeHtml(result.dateLabel)}</p>${precisionLabel ? `<p>${precisionLabel}</p>` : ''}<p>Fonte: <a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.name}</a></p>`;
+                layer.bindPopup(`<div class="historical-popup nation-popup">${popupHeader}<p class="nation-symbol-note">Caricamento dei simboli…</p></div>`,{maxWidth:360,minWidth:260,maxHeight:380});
+                layer.on('popupopen',async e=>{
+                    const popup=e.popup;
+                    try {
+                        const catalog=await loadSymbolsCatalog();
+                        const names=[name,...(feature.properties?.SEARCH_NAMES||[]),...countryAliases(name,targetYear)];
+                        const records=selectCountrySymbols(catalog.records,names,targetYear);
+                        // Aggiorna soltanto il popup ancora aperto e appartenente a questa carta.
+                        if(requestId!==latestLoad || !popup.isOpen())return;
+                        popup.setContent(`<div class="historical-popup nation-popup">${popupHeader}${renderCountrySymbols(records)}</div>`);
+                    } catch(error) {
+                        if(requestId===latestLoad && popup.isOpen())popup.setContent(`<div class="historical-popup nation-popup">${popupHeader}<p>Simboli non disponibili. Riapri la scheda per riprovare.</p></div>`);
+                    }
+                });
                 
                 // Interazioni mouse
                 layer.on({

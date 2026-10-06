@@ -73,7 +73,7 @@ export function matchingFeatures(features, id, year, date) {
 export function countryAliases(name, year) {
     const aliases = [name];
     if (/germany/i.test(name) && year <= 1918) aliases.push('German Empire');
-    if (/russia|soviet/i.test(name)) {
+    if (/(^|[^a-z])(russia|russian|soviet)([^a-z]|$)/i.test(name)) {
         if (year < 1918) aliases.push('Russian Empire');
         else if (year <= 1991) aliases.push('Soviet Union');
         else aliases.push('Russia');

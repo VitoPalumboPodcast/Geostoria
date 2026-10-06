@@ -1,9 +1,9 @@
-import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map.js?v=20261006-layers1';
-import { createAncientLayers } from './ancient-layers.js?v=20261006-layers1';
-import { SOURCES, escapeHtml, isAncientPeriod } from './sources.js?v=20261006-layers1';
+import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map.js?v=20261006-nation1';
+import { createAncientLayers } from './ancient-layers.js?v=20261006-nation1';
+import { SOURCES, escapeHtml, isAncientPeriod } from './sources.js?v=20261006-nation1';
 import { initializeTimeline, pausePlayback } from './timeline.js';
 import { historicalEvents } from './events.js?v=20260528-colonies';
-import { createSymbolsPanel } from './symbols.js?v=20261006-symbols1';
+import { createSymbolsPanel } from './symbols.js?v=20261006-nation1';
 
 const eventPanel = document.getElementById('event-panel');
 const eventEra = document.getElementById('event-era');

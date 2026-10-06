@@ -729,6 +729,15 @@ body.light-theme .duration-bar.active {
 .symbol-images figcaption { font-size:.72rem; line-height:1.5; margin-top:7px; overflow-wrap:anywhere; }
 .symbol-artist { opacity:.8; }
 .symbol-image-error { display:block; font-size:.7rem; padding:10px; }
+.nation-popup { min-width:240px; }
+.nation-symbols { border-top:1px solid rgba(128,128,128,.3); margin-top:10px; }
+.nation-symbols .symbol-country { border-bottom:0; }
+.nation-symbols .symbol-country h4 { font-size:.9rem; }
+.nation-symbols .symbol-images { gap:10px; }
+.nation-symbols .symbol-images img { height:74px; }
+.nation-symbols .symbol-images figcaption { font-size:.7rem; }
+.nation-symbols summary { cursor:pointer; font-size:.75rem; padding:6px 0; }
+.nation-symbol-note { font-size:.72rem; line-height:1.5; opacity:.85; }
 
 /* Responsive Design */
 @media (max-width: 900px) {

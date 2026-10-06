@@ -1,10 +1,22 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
-import {selectSymbols,renderSymbolCards} from '../symbols.js';
+import {selectSymbols,renderSymbolCards,selectCountrySymbols,renderCountrySymbols} from '../symbols.js';
 import {historicalEvents} from '../events.js';
+import {countryAliases} from '../sources.js';
 const catalog=JSON.parse(await readFile(new URL('../data/symbols.json',import.meta.url)));
 const event=id=>historicalEvents.find(e=>e.id===id);
+test('popup nazione: nomi cartografici composti e identità storiche',()=>{
+ const italy=selectCountrySymbols(catalog.records,['Italy/Sardinia'],2010);
+ assert.equal(italy.length,1);assert.equal(italy[0].id,'Q38');
+ assert.equal(selectCountrySymbols(catalog.records,['Germany/Prussia','German Empire'],1914)[0].id,'Q43287');
+ const german=selectCountrySymbols(catalog.records,['Germany (Prussia)',...countryAliases('Germany (Prussia)',1914)],1914);
+ assert.equal(german.length,1);assert.equal(german[0].id,'Q43287');
+ assert.equal(selectCountrySymbols(catalog.records,['United States of America'],1960)[0].id,'Q30');
+ assert.equal(selectCountrySymbols(catalog.records,['Italy/Sardinia'],-300).length,0);
+ const html=renderCountrySymbols(italy);
+ assert.ok(html.includes('Bandiera: Italia'));assert.ok(html.includes('Stemma: Italia'));assert.ok(html.includes('Commons'));
+});
 test('associa entità storiche e non bandiere moderne ai territori del 1914',()=>{
  const records=selectSymbols(catalog.records,event('world-war-one'));
  assert.ok(records.some(r=>r.id==='Q43287'));

@@ -1,6 +1,32 @@
-import {escapeHtml} from './sources.js?v=20261006-layers1';
+import {escapeHtml} from './sources.js?v=20261006-nation1';
 const KINDS = {flag:'Bandiera',arms:'Stemma',seal:'Sigillo'};
 let catalog;
+export function loadSymbolsCatalog() {
+ if(!catalog) {
+  catalog=fetch('./data/symbols.json?v=20261006-symbols1',{signal:AbortSignal.timeout(15000)}).then(async r=>{
+   if(!r.ok)throw new Error('Catalogo non disponibile');
+   const data=await r.json();if(!Array.isArray(data.records))throw new Error('Catalogo non valido');return data;
+  });
+  catalog.catch(()=>{catalog=null;});
+ }
+ return catalog;
+}
+export function selectCountrySymbols(records,names,year) {
+ const normalize=name=>String(name).toLowerCase().replace(/[^a-z0-9]/g,'');
+ const aliases={unitedstatesofamerica:'United States',russianfederation:'Russia',austrianempire:'Austrian'};
+ const namesList=names.flatMap(name=>String(name).split('/')).map(name=>aliases[normalize(name)]||name);
+ const involvedCountries=records.flatMap(record=>record.aliases.filter(alias=>namesList.some(name=>normalize(name)===normalize(alias))));
+ return selectSymbols(records,{year,involvedCountries});
+}
+export function renderCountrySymbols(records) {
+ if(!records.length)return '<p class="nation-symbol-note">Nessun simbolo adatto a questo periodo nel catalogo integrato.</p>';
+ return records.map(record=>{
+  const primary=['flag','arms'].map(kind=>record.assets.find(asset=>asset.kind===kind)).filter(Boolean);
+  if(!primary.length)primary.push(record.assets[0]);
+  const other=record.assets.filter(asset=>!primary.includes(asset));
+  return `<section class="nation-symbols">${renderSymbolCards([{...record,assets:primary}])}${other.length?`<details><summary>Altri simboli e varianti (${other.length})</summary>${renderSymbolCards([{...record,assets:other}])}</details>`:''}</section>`;
+ }).join('')+'<p class="nation-symbol-note">Le varianti datate seguono l’anno dei confini; quelle senza data non certificano l’uso in quell’anno.</p>';
+}
 export function selectSymbols(records,event) {
  const countries=new Set((event.groups||[]).flatMap(g=>g.countries||[]).concat(event.involvedCountries||[]));
  const matched=records.filter(r=>event.year>=r.from && event.year<=r.to && r.aliases.some(a=>countries.has(a)));
@@ -23,14 +49,7 @@ export function createSymbolsPanel(panel) {
   const request=++version;
   panel.textContent='Caricamento del catalogo…';
   try {
-   if(!catalog) {
-    catalog=fetch('./data/symbols.json?v=20261006-symbols1',{signal:AbortSignal.timeout(15000)}).then(async r=>{
-     if(!r.ok) throw new Error('Catalogo non disponibile');
-     const data=await r.json(); if(!Array.isArray(data.records))throw new Error('Catalogo non valido');return data;
-    });
-    catalog.catch(()=>{catalog=null;});
-   }
-   const data=await catalog;
+   const data=await loadSymbolsCatalog();
    if(request!==version)return;
    const records=selectSymbols(data.records,event);
    panel.innerHTML=records.length ? renderSymbolCards(records) : '<p class="source-note">Nessun simbolo con associazione adatta a questo periodo nel catalogo integrato. Per le civiltà antiche non vengono mostrate bandiere moderne.</p>';
