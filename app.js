@@ -1,4 +1,4 @@
-import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map.js?v=20261006-country1';
+import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map.js?v=20261006-light1';
 import { createAncientLayers } from './ancient-layers.js?v=20261006-nation1';
 import { SOURCES, escapeHtml, isAncientPeriod } from './sources.js?v=20261006-nation1';
 import { initializeTimeline, pausePlayback } from './timeline.js?v=20261006-timeline2';

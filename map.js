@@ -40,8 +40,9 @@ export function initializeMap(domId, initialCenter = [20, 0], initialZoom = 2) {
         preferCanvas: true
     }).setView(initialCenter, initialZoom);
 
-    // Carica il layer di base scuro da CartoDB
-    baseTileLayer = L.tileLayer(getBasemapUrl('dark'), {
+    // Il basemap iniziale segue il tema predefinito della pagina.
+    const initialTheme = document.body.classList.contains('light-theme') ? 'light' : 'dark';
+    baseTileLayer = L.tileLayer(getBasemapUrl(initialTheme), {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 20
