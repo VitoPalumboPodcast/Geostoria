@@ -226,7 +226,7 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
                 const precision = Number(feature.properties?.BORDERPRECISION);
                 const precisionLabel = ({1:'Confini approssimativi',2:'Confini moderatamente precisi',3:'Confini definiti dal diritto internazionale'})[precision];
                 const popupHeader=`<strong>${escapeHtml(name)}</strong><p>Confini: ${escapeHtml(result.dateLabel)}</p>${precisionLabel ? `<p>${precisionLabel}</p>` : ''}<p>Fonte: <a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.name}</a></p>`;
-                layer.bindPopup(`<div class="historical-popup nation-popup">${popupHeader}<p class="nation-symbol-note">Caricamento dei simboli…</p></div>`,{maxWidth:360,minWidth:260,maxHeight:380});
+                layer.bindPopup(`<div class="historical-popup nation-popup">${popupHeader}<p class="nation-symbol-note">Caricamento dei simboli…</p></div>`,{maxWidth:320,minWidth:260,maxHeight:340,keepInView:true});
                 layer.on('popupopen',async e=>{
                     const popup=e.popup;
                     try {
