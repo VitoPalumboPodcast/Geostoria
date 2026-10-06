@@ -6,6 +6,7 @@ App web statica per esplorare eventi di geostoria su una mappa interattiva con t
 
 - Mappa Leaflet con confini storici caricati da dataset GeoJSON pubblici.
 - Timeline navigabile con mouse, rotellina e touch.
+- Anche gli estremi della timeline possono essere centrati: lo zoom conserva l'anno al centro e interrompe le animazioni precedenti. Un clic rapido sullo zoom durante il centraggio mantiene come riferimento la destinazione selezionata.
 - Pannello evento con descrizione, periodo storico e territori coinvolti.
 - Evidenziazione delle potenze/aree storiche collegate all'evento selezionato.
 - Tema chiaro/scuro.

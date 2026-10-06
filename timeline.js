@@ -19,6 +19,23 @@ let dragVelocity = 0;
 let lastDragTime = 0;
 let lastDragX = 0;
 let inertiaFrame = null;
+let scrollAnimationTarget = null;
+let previousViewportWidth = 0;
+
+// Mezzo viewport libero ai due estremi permette di centrare anche il primo/ultimo anno.
+export function timelineScrollLimits(viewportWidth, timelineWidth) {
+    return {min: viewportWidth / 2 - timelineWidth, max: viewportWidth / 2};
+}
+export function clampTimelinePosition(position, viewportWidth, timelineWidth) {
+    const {min,max} = timelineScrollLimits(viewportWidth,timelineWidth);
+    return Math.max(min,Math.min(max,position));
+}
+function stopTimelineMotion() {
+    cancelAnimationFrame(inertiaFrame);
+    inertiaFrame = null;
+    scrollAnimationTarget = null;
+    dragVelocity = 0;
+}
 
 // Elementi DOM cache
 let wrapper = null;
@@ -45,6 +62,7 @@ export function initializeTimeline(options) {
     eventsContainer = document.getElementById('timeline-events');
     durationsContainer = document.getElementById('timeline-durations');
     playBtn = document.getElementById('play-btn');
+    previousViewportWidth = wrapper.clientWidth;
     onEventSelectedCallback = options.onEventSelected;
 
     // Configura eventi drag/pan della timeline
@@ -66,7 +84,11 @@ export function initializeTimeline(options) {
     });
 
     // Ascolta il resize per adattare i limiti di scroll
-    window.addEventListener('resize', clampScroll);
+    window.addEventListener('resize', () => {
+        const centerYear = MIN_YEAR + (previousViewportWidth / 2 - (scrollAnimationTarget ?? currentScrollX)) / pixelsPerYear;
+        previousViewportWidth = wrapper.clientWidth;
+        centerTimelineOnYear(centerYear, false);
+    });
 
     // Render iniziale
     renderTimeline();
@@ -91,7 +113,7 @@ function setupDragEvents() {
         lastDragX = e.clientX;
         lastDragTime = Date.now();
         dragVelocity = 0;
-        cancelAnimationFrame(inertiaFrame);
+        stopTimelineMotion();
         wrapper.style.cursor = 'grabbing';
     });
 
@@ -135,7 +157,7 @@ function setupDragEvents() {
         lastDragX = touch.clientX;
         lastDragTime = Date.now();
         dragVelocity = 0;
-        cancelAnimationFrame(inertiaFrame);
+        stopTimelineMotion();
     }, { passive: true });
 
     wrapper.addEventListener('touchmove', (e) => {
@@ -173,7 +195,7 @@ function setupDragEvents() {
     // Supporto per scroll con la rotellina del mouse (orizzontale)
     wrapper.addEventListener('wheel', (e) => {
         e.preventDefault();
-        cancelAnimationFrame(inertiaFrame);
+        stopTimelineMotion();
         // Usa deltaY o deltaX a seconda di come l'utente scorre
         const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
         currentScrollX -= delta * 0.8;
@@ -192,7 +214,7 @@ function applyInertia() {
     
     // Controlla se sforiamo i limiti e decelera più in fretta
     const minScroll = getMinScroll();
-    if (currentScrollX > 50 || currentScrollX < minScroll - 50) {
+    if (currentScrollX > wrapper.clientWidth / 2 + 50 || currentScrollX < minScroll - 50) {
         dragVelocity *= 0.6; // Freno a molla
     }
 
@@ -208,17 +230,12 @@ function applyInertia() {
 function getMinScroll() {
     const viewportWidth = wrapper.clientWidth;
     const timelineWidth = getTimelineWidth();
-    return Math.min(0, viewportWidth - timelineWidth);
+    return timelineScrollLimits(viewportWidth,timelineWidth).min;
 }
 
 // Limita lo scroll all'interno dei confini fisici
 function clampScroll() {
-    const minScroll = getMinScroll();
-    if (currentScrollX > 0) {
-        currentScrollX = 0;
-    } else if (currentScrollX < minScroll) {
-        currentScrollX = minScroll;
-    }
+    currentScrollX = clampTimelinePosition(currentScrollX,wrapper.clientWidth,getTimelineWidth());
 }
 
 // Applica lo spostamento CSS3 tramite GPU (translate3d per massime performance)
@@ -234,7 +251,7 @@ export function centerTimelineOnYear(year, smooth = true) {
     // Posiziona l'anno esattamente al centro del viewport
     const targetScroll = -(yearX - viewportWidth / 2);
     
-    cancelAnimationFrame(inertiaFrame);
+    stopTimelineMotion();
     
     if (smooth) {
         // Transizione animata fluida dello scroll della timeline
@@ -252,7 +269,8 @@ function animateScroll(targetX) {
     // Calcola il target clippato per evitare sobbalzi
     const viewportWidth = wrapper.clientWidth;
     const timelineWidth = getTimelineWidth();
-    const clampedTarget = Math.max(Math.min(0, targetX), Math.min(0, viewportWidth - timelineWidth));
+    const clampedTarget = clampTimelinePosition(targetX,viewportWidth,timelineWidth);
+    scrollAnimationTarget = clampedTarget;
     
     const distance = clampedTarget - startX;
     const duration = 800; // ms
@@ -271,6 +289,7 @@ function animateScroll(targetX) {
         if (progress < 1) {
             inertiaFrame = requestAnimationFrame(step);
         } else {
+            scrollAnimationTarget = null;
             clampScroll();
             applyTransform();
         }
@@ -287,7 +306,8 @@ function zoomTimeline(zoomFactor) {
     
     // Trova l'anno attualmente al centro dello schermo prima dello zoom per preservare il focus visivo
     const viewportWidth = wrapper.clientWidth;
-    const centerYear = MIN_YEAR + (-currentScrollX + viewportWidth / 2) / pixelsPerYear;
+    const centerYear = MIN_YEAR + (-(scrollAnimationTarget ?? currentScrollX) + viewportWidth / 2) / pixelsPerYear;
+    stopTimelineMotion();
     
     pixelsPerYear = newPixelsPerYear;
     
@@ -300,6 +320,7 @@ function zoomTimeline(zoomFactor) {
 
 // Ripristina lo zoom iniziale
 function resetTimelineZoom() {
+    stopTimelineMotion();
     pixelsPerYear = 0.35;
     renderTimeline();
     if (activeEventId) {
