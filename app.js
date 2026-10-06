@@ -1,4 +1,6 @@
-import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map.js?v=20261006-carto-key';
+import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map.js?v=20261006-layers1';
+import { createAncientLayers } from './ancient-layers.js?v=20261006-layers1';
+import { SOURCES, escapeHtml, isAncientPeriod } from './sources.js?v=20261006-layers1';
 import { initializeTimeline, pausePlayback } from './timeline.js';
 import { historicalEvents } from './events.js?v=20260528-colonies';
 
@@ -12,6 +14,34 @@ const countriesListContainer = document.getElementById('countries-list-container
 const countriesListTitle = document.querySelector('.countries-list-container h3');
 const mapLoader = document.getElementById('map-loader');
 const yearValue = document.getElementById('year-value');
+const boundaryValue = document.getElementById('boundary-value');
+const mapSourceSelect = document.getElementById('map-source-select');
+const sourceInfo = document.getElementById('cartography-source');
+const layerInputs = Object.fromEntries(['pleiades','dare'].map(id => [id, document.getElementById(`${id}-toggle`)]));
+let activeEvent = null;
+let selectionVersion = 0;
+let ancientLayers = null;
+
+function updateLayerStatus(status) {
+    for (const [id, state] of Object.entries(status)) {
+        layerInputs[id].disabled = !state.available;
+        const el = document.getElementById(`${id}-status`);
+        if (!state.available) el.textContent = 'Disponibile fra 800 a.C. e 700 d.C.';
+        else if (!state.enabled) el.textContent = id === 'pleiades' ? 'Luoghi attestati nel periodo selezionato' : 'Catalogo romano, senza filtro annuale';
+        else if (state.loading) el.textContent = 'Caricamento luoghi…';
+        else if (state.error) el.textContent = state.error;
+        else el.textContent = `${state.shown} luoghi nell’area visibile${state.total > state.shown ? ` su ${state.total}: aumenta lo zoom` : ''}`;
+    }
+}
+
+function updateSourceInfo(info) {
+    const source = SOURCES[info.sourceId];
+    sourceInfo.dataset.sourceId = info.sourceId;
+    sourceInfo.dataset.featureCount = String(info.featureCount);
+    sourceInfo.dataset.boundaryDate = info.mapDate || String(info.boundaryYear);
+    sourceInfo.innerHTML = `<h3>Fonte dei confini</h3><p><a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.name} ↗</a> · ${escapeHtml(info.scope)}</p><p>Confini: <strong>${escapeHtml(info.dateLabel)}</strong></p><p class="source-note">${escapeHtml(info.note)}</p>${info.warning ? `<p class="source-warning">${escapeHtml(info.warning)}</p>` : ''}<p class="source-credit">${escapeHtml(source.credit)} · <a href="${source.licenseUrl}" target="_blank" rel="noopener noreferrer">${source.license}</a></p>`;
+    boundaryValue.textContent = `${info.dateLabel} · ${source.name}`;
+}
 
 function getEventFocusGroups(event) {
     return event.groups || [];
@@ -85,26 +115,39 @@ function updateEventPanel(event) {
     });
 }
 
-async function handleEventChange(event) {
+async function handleEventChange(event, {focus = true} = {}) {
+    const version = ++selectionVersion;
+    activeEvent = event;
     try {
         yearValue.textContent = event.eraText;
+        boundaryValue.textContent = 'Caricamento…';
+        sourceInfo.replaceChildren();
+        sourceInfo.textContent = 'Caricamento della fonte cartografica…';
+        delete sourceInfo.dataset.sourceId;
+        updateEventPanel(event);
+        // Nasconde subito i luoghi di un periodo precedente durante il cambio evento.
+        ancientLayers?.setYear(event.year);
 
-        await loadYearMap(
+        const info = await loadYearMap(
             event.year,
             getEventFocusGroups(event),
             event.labels || [],
             showLoader,
-            hideLoader
+            hideLoader,
+            {source: mapSourceSelect.value, mapDate: event.mapDate}
         );
+        if (version !== selectionVersion || !info) return;
+        updateSourceInfo(info);
 
-        updateEventPanel(event);
-
-        if (event.bounds) {
+        if (focus && event.bounds) {
             fitMapBounds(event.bounds);
         }
     } catch (err) {
+        if (version !== selectionVersion) return;
         console.error('Errore nel cambio evento:', err);
         hideLoader();
+        boundaryValue.textContent = 'Caricamento non riuscito';
+        sourceInfo.textContent = 'Non è stato possibile caricare i confini di questo evento. Seleziona nuovamente l’evento per riprovare.';
         updateEventPanel({
             ...event,
             description: `${event.description}\n\nNota: non sono riuscito a caricare i confini storici remoti per questo anno. Controlla la connessione e riprova.`
@@ -113,15 +156,24 @@ async function handleEventChange(event) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    initializeMap('map');
+    const leafletMap = initializeMap('map');
+    ancientLayers = createAncientLayers(leafletMap, updateLayerStatus);
+    ancientLayers.setYear(historicalEvents[0]?.year ?? -3000);
+    mapSourceSelect.addEventListener('change', () => {
+        pausePlayback();
+        if (activeEvent) handleEventChange(activeEvent, {focus:false});
+    });
+    for (const [id, input] of Object.entries(layerInputs)) {
+        input.addEventListener('change', () => {
+            pausePlayback();
+            ancientLayers.setEnabled(id, input.checked);
+        });
+    }
 
     initializeTimeline({
         onEventSelected: handleEventChange
     });
-
-    if (historicalEvents.length > 0) {
-        handleEventChange(historicalEvents[0]);
-    }
+    if (historicalEvents.length) handleEventChange(historicalEvents[0]);
 
     closePanelBtn.addEventListener('click', () => {
         eventPanel.classList.add('closed');

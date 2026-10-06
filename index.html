@@ -17,13 +17,35 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     
     <!-- Stili Personalizzati -->
-    <link rel="stylesheet" href="style.css?v=20260528-labels2">
+    <link rel="stylesheet" href="style.css?v=20261006-layers1">
 </head>
 <body>
     <div id="app-container">
         <!-- Parte Superiore: Mappa -->
         <main id="map-container">
             <div id="map"></div>
+            <details id="map-layers-panel" class="glass">
+                <summary><i class="fas fa-layer-group" aria-hidden="true"></i> Livelli e fonti</summary>
+                <div class="map-layers-content">
+                    <label for="map-source-select">Confini storici</label>
+                    <select id="map-source-select" aria-describedby="cartographic-help">
+                        <option value="auto">Automatico per epoca</option>
+                        <option value="historical">Historical Basemaps · mondo</option>
+                        <option value="cshapes-world">CShapes · mondo, 1886–2019</option>
+                        <option value="cshapes-europe">CShapes-Europe · Europa, 1816–2023</option>
+                    </select>
+                    <p id="cartographic-help" class="source-note">Automatico: CShapes dal 1886 al 2019, CShapes-Europe dal 1816 al 1885, carta globale negli altri periodi.</p>
+                    <fieldset>
+                        <legend>Roma e Mediterraneo antico</legend>
+                        <label class="layer-option" for="pleiades-toggle"><input type="checkbox" id="pleiades-toggle"><span class="layer-dot pleiades-dot"></span> Luoghi antichi · Pleiades</label>
+                        <p id="pleiades-status" class="layer-status" aria-live="polite"></p>
+                        <label class="layer-option" for="dare-toggle"><input type="checkbox" id="dare-toggle"><span class="layer-dot dare-dot"></span> Città e fortezze · DARE</label>
+                        <p id="dare-status" class="layer-status" aria-live="polite"></p>
+                    </fieldset>
+                    <p class="source-note">Pleiades segue intervalli di attestazione. DARE mostra un catalogo romano, non una ricostruzione per singolo anno.</p>
+                    <p class="source-credit"><a href="https://pleiades.stoa.org/downloads" target="_blank" rel="noopener noreferrer">Pleiades · CC BY 3.0 ↗</a><br><a href="https://imperium.ahlfeldt.se/print.php?doc=info_api" target="_blank" rel="noopener noreferrer">DARE · CC BY-SA 3.0 ↗</a></p>
+                </div>
+            </details>
             
             <!-- Pannello Informativo Flottante (Glassmorphism) -->
             <div id="event-panel" class="floating-panel glass">
@@ -38,6 +60,7 @@
                     <h3>Stati Coinvolti</h3>
                     <div id="countries-list" class="countries-list"></div>
                 </div>
+                <div id="cartography-source" class="cartography-source" aria-live="polite"></div>
             </div>
 
             <!-- Loader Mappa -->
@@ -48,7 +71,8 @@
 
             <!-- Legenda e Stato Corrente Mappa -->
             <div id="map-info-overlay" class="map-info glass">
-                <div id="current-year-display">Anno: <span id="year-value">-</span></div>
+                <div id="current-year-display">Evento: <span id="year-value">-</span></div>
+                <div class="boundary-caption">Confini: <span id="boundary-value">-</span></div>
                 <div id="loading-indicator" class="tiny-loader hidden">
                     <i class="fas fa-spinner fa-spin"></i>
                 </div>
@@ -95,6 +119,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <!-- Entrypoint JavaScript App (ES Modules) -->
-    <script type="module" src="app.js?v=20261006-carto-key"></script>
+    <script type="module" src="app.js?v=20261006-layers1"></script>
 </body>
 </html>

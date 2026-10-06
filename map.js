@@ -1,12 +1,4 @@
-// Elenco degli anni con dati GeoJSON disponibili nel repository aourednik/historical-basemaps
-const AVAILABLE_YEARS = [
-    -123000, -10000, -8000, -5000, -4000, -3000, -2000, -1500, -1000, -700, -500, 
-    -400, -323, -300, -200, -100, -1, 100, 200, 300, 400, 500, 600, 700, 800, 900, 
-    1000, 1100, 1200, 1279, 1300, 1400, 1492, 1500, 1530, 1600, 1650, 1700, 1715, 
-    1783, 1800, 1815, 1880, 1900, 1914, 1920, 1930, 1938, 1945, 1960, 1994, 2000, 2010
-];
-
-const BASE_URL = "https://raw.githubusercontent.com/aourednik/historical-basemaps/master/geojson/";
+import { closestHistoricalYear, loadBoundaries, SOURCES, sourceAttribution, escapeHtml } from './sources.js?v=20261006-layers1';
 
 // Chiave CARTO Basemaps limitata al dominio vitopalumbopodcast.github.io.
 const CARTO_BASEMAP_KEY = 'cb1_4c5a_1_0417a143fc768f340fec2f48';
@@ -20,10 +12,10 @@ let map = null;
 let geoJsonLayer = null;
 let baseTileLayer = null; // Memorizza il layer delle tile per poterlo sostituire
 let labelsLayer = null; // Memorizza il layer per le scritte dei nomi geografici
-let geoJsonCache = {}; // Cache in memoria per evitare download ripetuti
 let activeGroups = []; // Fazioni/gruppi attivi per l'evento corrente
 let activeHighlightedCountries = [];
 let currentYearLoaded = null;
+let latestLoad = 0;
 
 // Funzione hash per generare colori stabili basati sul nome del paese
 function stringToColor(str) {
@@ -42,7 +34,8 @@ export function initializeMap(domId, initialCenter = [20, 0], initialZoom = 2) {
         zoomControl: true,
         minZoom: 2,
         maxZoom: 10,
-        worldCopyJump: true
+        worldCopyJump: true,
+        preferCanvas: true
     }).setView(initialCenter, initialZoom);
 
     // Carica il layer di base scuro da CartoDB
@@ -86,23 +79,17 @@ export function changeMapTheme(theme) {
 
 // Riconduce l'anno selezionato a quello più vicino disponibile
 export function getClosestAvailableYear(year) {
-    return AVAILABLE_YEARS.reduce((prev, curr) => {
-        return Math.abs(curr - year) < Math.abs(prev - year) ? curr : prev;
-    });
+    return closestHistoricalYear(year);
 }
 
 // Restituisce il nome del file geojson per un anno specifico
-function getGeoJsonFilename(year) {
-    if (year < 0) {
-        return `world_bc${Math.abs(year)}.geojson`;
-    } else {
-        return `world_${year}.geojson`;
-    }
+function getFeatureSearchName(feature) {
+    return (feature.properties?.SEARCH_NAMES || [getFeatureName(feature)]).join(' ');
 }
 
 // Funzione di stile per ogni feature geografica
-function styleFeature(feature) {
-    const countryName = getFeatureName(feature);
+function countryFeatureStyle(feature) {
+    const countryName = getFeatureSearchName(feature);
     const isLightTheme = document.body.classList.contains('light-theme');
     
     // 1. Se c'è un'evidenziazione attiva specifica (es. click su un tag fazione)
@@ -172,6 +159,11 @@ function styleFeature(feature) {
     }
 }
 
+function styleFeature(feature) {
+    const precision = Number(feature.properties?.BORDERPRECISION);
+    return {...countryFeatureStyle(feature), dashArray: precision === 1 ? '4 4' : precision === 2 ? '2 3' : null};
+}
+
 // Trova il nome del paese all'interno della feature GeoJSON
 export function getFeatureName(feature) {
     if (!feature || !feature.properties) return "Sconosciuto";
@@ -187,7 +179,7 @@ export function highlightCountries(countryNames) {
             geoJsonLayer.resetStyle(layer);
             
             // Porta gli elementi evidenziati in primo piano
-            const name = getFeatureName(layer.feature);
+            const name = getFeatureSearchName(layer.feature);
             const isHighlighted = activeHighlightedCountries.some(keyword => {
                 return name.toLowerCase().includes(keyword.toLowerCase());
             });
@@ -199,34 +191,18 @@ export function highlightCountries(countryNames) {
 }
 
 // Carica e renderizza i confini storici di un determinato anno
-export async function loadYearMap(year, eventGroups = [], eventLabels = [], onStartLoad, onEndLoad) {
-    const targetYear = getClosestAvailableYear(year);
-    
-    // Rilascia le etichette di testo precedenti
-    if (labelsLayer) {
-        labelsLayer.clearLayers();
-    }
-
-    const filename = getGeoJsonFilename(targetYear);
-    const url = `${BASE_URL}${filename}`;
+export async function loadYearMap(year, eventGroups = [], eventLabels = [], onStartLoad, onEndLoad, options = {}) {
+    const requestId = ++latestLoad;
 
     if (onStartLoad) onStartLoad();
 
     try {
-        let geoData = null;
-
-        // Controlla cache
-        if (geoJsonCache[targetYear]) {
-            geoData = geoJsonCache[targetYear];
-        } else {
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error(`Impossibile caricare i dati storici per l'anno ${targetYear}`);
-            }
-            geoData = await response.json();
-            // Salva in cache
-            geoJsonCache[targetYear] = geoData;
-        }
+        const result = await loadBoundaries(year, options.source || 'auto', options.mapDate);
+        if (requestId !== latestLoad) return null;
+        const geoData = result.data;
+        const targetYear = result.boundaryYear;
+        const source = SOURCES[result.sourceId];
+        labelsLayer?.clearLayers();
 
         // Rimuovi layer precedente se presente
         if (geoJsonLayer) {
@@ -240,12 +216,15 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
 
         // Crea il nuovo GeoJSON layer
         geoJsonLayer = L.geoJSON(geoData, {
+            attribution: sourceAttribution(result.sourceId),
             style: styleFeature,
             onEachFeature: (feature, layer) => {
                 const name = getFeatureName(feature);
                 
                 // Popup con nome dello stato
-                layer.bindPopup(`<div style="font-family: 'Outfit', sans-serif; font-weight:600; font-size:1rem; margin-bottom:4px;">${name}</div><div style="font-size:0.85rem; color:#94a3b8;">Territorio nell'anno ${targetYear < 0 ? Math.abs(targetYear) + ' a.C.' : targetYear + ' d.C.'}</div>`);
+                const precision = Number(feature.properties?.BORDERPRECISION);
+                const precisionLabel = ({1:'Confini approssimativi',2:'Confini moderatamente precisi',3:'Confini definiti dal diritto internazionale'})[precision];
+                layer.bindPopup(`<div class="historical-popup"><strong>${escapeHtml(name)}</strong><p>Confini: ${escapeHtml(result.dateLabel)}</p>${precisionLabel ? `<p>${precisionLabel}</p>` : ''}<p>Fonte: <a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.name}</a></p></div>`);
                 
                 // Interazioni mouse
                 layer.on({
@@ -253,7 +232,8 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
                         const l = e.target;
                         
                         // Trova se fa parte delle fazioni attive
-                        const belongsToGroup = activeGroups.some(g => g.countries.some(k => name.toLowerCase().includes(k.toLowerCase())));
+                        const searchName = getFeatureSearchName(feature).toLowerCase();
+                        const belongsToGroup = activeGroups.some(g => g.countries.some(k => searchName.includes(k.toLowerCase())));
                         const isLightTheme = document.body.classList.contains('light-theme');
                         
                         l.setStyle({
@@ -273,7 +253,7 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
                         map.fitBounds(e.target.getBounds(), { padding: [50, 50], maxZoom: 5 });
                         
                         // Genera un evento custom per notificare l'app del click sul paese
-                        const event = new CustomEvent('countrySelected', { detail: { name: name } });
+                        const event = new CustomEvent('countrySelected', { detail: { name: getFeatureSearchName(feature) } });
                         window.dispatchEvent(event);
                     }
                 });
@@ -297,12 +277,13 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
             });
         }
 
-        return targetYear;
+        const {data, ...info} = result;
+        return {...info, featureCount: geoData.features.length};
     } catch (error) {
         console.error("Errore nel caricamento della mappa storica:", error);
         throw error;
     } finally {
-        if (onEndLoad) onEndLoad();
+        if (requestId === latestLoad && onEndLoad) onEndLoad();
     }
 }
 
@@ -323,7 +304,7 @@ export function zoomToInvolvedCountries(countryNames) {
 
     let targetLayers = [];
     geoJsonLayer.eachLayer(layer => {
-        const name = getFeatureName(layer.feature);
+        const name = getFeatureSearchName(layer.feature);
         const match = countryNames.some(keyword => {
             return name.toLowerCase().includes(keyword.toLowerCase());
         });
