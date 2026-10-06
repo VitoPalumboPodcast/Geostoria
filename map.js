@@ -8,6 +8,14 @@ const AVAILABLE_YEARS = [
 
 const BASE_URL = "https://raw.githubusercontent.com/aourednik/historical-basemaps/master/geojson/";
 
+// Chiave CARTO Basemaps limitata al dominio vitopalumbopodcast.github.io.
+const CARTO_BASEMAP_KEY = 'cb1_4c5a_1_0417a143fc768f340fec2f48';
+
+function getBasemapUrl(theme) {
+    const style = theme === 'light' ? 'light_all' : 'dark_all';
+    return `https://{s}.basemaps.cartocdn.com/${style}/{z}/{x}/{y}{r}.png?key=${encodeURIComponent(CARTO_BASEMAP_KEY)}`;
+}
+
 let map = null;
 let geoJsonLayer = null;
 let baseTileLayer = null; // Memorizza il layer delle tile per poterlo sostituire
@@ -38,7 +46,7 @@ export function initializeMap(domId, initialCenter = [20, 0], initialZoom = 2) {
     }).setView(initialCenter, initialZoom);
 
     // Carica il layer di base scuro da CartoDB
-    baseTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    baseTileLayer = L.tileLayer(getBasemapUrl('dark'), {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
         subdomains: 'abcd',
         maxZoom: 20
@@ -60,9 +68,7 @@ export function changeMapTheme(theme) {
     }
     
     // Carica le nuove tile
-    const url = theme === 'light'
-        ? 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png'
-        : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+    const url = getBasemapUrl(theme);
         
     baseTileLayer = L.tileLayer(url, {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',

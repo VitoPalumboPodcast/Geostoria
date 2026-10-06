@@ -1,4 +1,4 @@
-import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map.js?v=20260528-labels2';
+import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map.js?v=20261006-carto-key';
 import { initializeTimeline, pausePlayback } from './timeline.js';
 import { historicalEvents } from './events.js?v=20260528-colonies';
 
