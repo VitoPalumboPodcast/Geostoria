@@ -57,4 +57,6 @@ Poi apri `http://localhost:4174/`.
 
 ## Note
 
+La scheda di una nazione combina copie locali di Wikidata, World Bank WDI, V-Dem v16, Maddison Project 2023 e Seshat. Mostra dati datati, stime, incertezze e licenze; le informazioni prive di datazione sono separate. La sezione “Evoluzione nel tempo” conserva le osservazioni originali, senza interpolazione. Le serie statistiche nazionali e quelle degli imperi storici restano distinte. Dettagli e aggiornamento: [data/COUNTRY-DATA.md](data/COUNTRY-DATA.md).
+
 L'app non richiede database e non salva dati utente. Per visualizzare mappa e confini storici serve connessione internet, perché usa CDN e dataset remoti.

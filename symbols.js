@@ -27,6 +27,10 @@ export function renderCountrySymbols(records) {
   return `<section class="nation-symbols">${renderSymbolCards([{...record,assets:primary}])}${other.length?`<details><summary>Altri simboli e varianti (${other.length})</summary>${renderSymbolCards([{...record,assets:other}])}</details>`:''}</section>`;
  }).join('')+'<p class="nation-symbol-note">Le varianti datate seguono l’anno dei confini; quelle senza data non certificano l’uso in quell’anno.</p>';
 }
+// Anteprima compatta: i crediti completi e le varianti restano nella sezione dedicata.
+export function renderCountrySymbolPreview(records) {
+ return `<div class="nation-symbol-preview">${records.flatMap(record=>['flag','arms'].map(kind=>record.assets.find(a=>a.kind===kind)).filter(Boolean).map(asset=>`<figure><a href="${escapeHtml(safeUrl(asset.page))}" target="_blank" rel="noopener noreferrer"><img src="${escapeHtml(safeUrl(asset.url))}" alt="${KINDS[asset.kind]}: ${escapeHtml(record.name)}" width="80" height="48" loading="lazy"></a><figcaption>${KINDS[asset.kind]}<small title="${escapeHtml(asset.artist)}">${escapeHtml(asset.artist)}</small><a href="${escapeHtml(safeUrl(asset.licenseUrl)||safeUrl(asset.page))}" target="_blank" rel="noopener noreferrer">${escapeHtml(asset.license)}</a></figcaption></figure>`)).join('')}</div>`;
+}
 export function selectSymbols(records,event) {
  const countries=new Set((event.groups||[]).flatMap(g=>g.countries||[]).concat(event.involvedCountries||[]));
  const matched=records.filter(r=>event.year>=r.from && event.year<=r.to && r.aliases.some(a=>countries.has(a)));

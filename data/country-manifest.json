@@ -1,0 +1,146 @@
+{
+  "generated": "2026-10-06T20:42:03.269639+00:00",
+  "files": {
+    "country-worldbank.json.gz": {
+      "sha256": "4b077306bdd3760ed6963934a75efaf94b68f2d9d61fa88bfa224546aa3d8df4",
+      "bytes": 193978
+    },
+    "country-vdem.json.gz": {
+      "sha256": "0c665496438eaa79f39a6881c60f2b04981f4e7a8f8ad35ad674699b3798bb38",
+      "bytes": 92991
+    },
+    "country-maddison.json.gz": {
+      "sha256": "73f983c7e25d66a704b9721821bb089be13aa6a4ef5705dbc46072c46675bb2d",
+      "bytes": 112099
+    },
+    "country-seshat.json.gz": {
+      "sha256": "b530578b38a3fd5b2ff21362c20fb5d88e1c5d3051368e2be54c24f487100f1f",
+      "bytes": 91131
+    },
+    "country-wikidata.json.gz": {
+      "sha256": "6989d2ec8b5eaef0526400796e74967476c5e4a5574565f024327c476612616f",
+      "bytes": 38574
+    }
+  },
+  "normalizedRanges": [
+    {
+      "source": "seshat",
+      "field": "population",
+      "id": 571,
+      "polity": "us_early_illinois_confederation",
+      "original": [
+        600,
+        300
+      ]
+    },
+    {
+      "source": "seshat",
+      "field": "population",
+      "id": 621,
+      "polity": "tr_east_roman_emp",
+      "original": [
+        15000000,
+        12500000
+      ]
+    },
+    {
+      "source": "seshat",
+      "field": "area",
+      "id": 380,
+      "polity": "af_durrani_emp",
+      "original": [
+        1790000,
+        490000
+      ]
+    },
+    {
+      "source": "seshat",
+      "field": "area",
+      "id": 410,
+      "polity": "cn_northern_song_dyn",
+      "original": [
+        3033000,
+        2900000
+      ]
+    },
+    {
+      "source": "seshat",
+      "field": "area",
+      "id": 411,
+      "polity": "cn_northern_song_dyn",
+      "original": [
+        2367000,
+        2233000
+      ]
+    },
+    {
+      "source": "seshat",
+      "field": "area",
+      "id": 457,
+      "polity": "cn_yuan_dyn",
+      "original": [
+        24000000,
+        11000000
+      ]
+    },
+    {
+      "source": "seshat",
+      "field": "area",
+      "id": 607,
+      "polity": "ir_seleucid_emp",
+      "original": [
+        2300000,
+        475000
+      ]
+    }
+  ],
+  "coverage": {
+    "worldbank": 217,
+    "vdem": 202,
+    "maddison": 169,
+    "seshat": 516,
+    "wikidata": 23
+  },
+  "sources": {
+    "worldbank": {
+      "name": "World Bank · WDI",
+      "url": "https://data.worldbank.org/",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "citation": "World Bank, World Development Indicators. SP.POP.TOTL; AG.SRF.TOTL.K2; EN.POP.DNST.",
+      "note": "Serie nazionali/territoriali: il perimetro statistico può differire dai confini cartografici. Densità riferita alla superficie terrestre; superficie totale comprensiva delle acque interne."
+    },
+    "vdem": {
+      "name": "V-Dem v16 · Regimes of the World",
+      "url": "https://v-dem.net/data/the-v-dem-dataset/",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "citation": "Coppedge et al. (2026), V-Dem Country-Year Dataset v16. DOI: 10.23696/vdemds26. Classificazione v2x_regime, incertezza v2x_regime_amb; indice v2x_polyarchy.",
+      "note": "Classificazione di ricerca annuale: non descrive la forma costituzionale di governo. Le unità paese possono includere periodi coloniali e predecessori."
+    },
+    "maddison": {
+      "name": "Maddison Project 2023",
+      "url": "https://doi.org/10.34894/INZBF2",
+      "license": "CC BY 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by/4.0/",
+      "citation": "Bolt, Jutta e Jan Luiten van Zanden (2024), Maddison style estimates of the evolution of the world economy: A new 2023 update, Journal of Economic Surveys. DOI: 10.1111/joes.12618.",
+      "note": "Popolazioni di serie nazionali ricostruite: non rappresentano automaticamente l’intera popolazione di un impero storico. Unità originali: migliaia di abitanti, convertite in abitanti. Le fonti originali sono riportate per paese."
+    },
+    "seshat": {
+      "name": "Seshat Global History Databank",
+      "url": "https://www.seshat-db.com/variable-hierarchy/",
+      "license": "CC BY-SA 4.0",
+      "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0/",
+      "citation": "Seshat Global History Databank, dati pubblici: Polity population, Polity territory, Polity capital.",
+      "note": "Stime riferite alle entità Seshat, con intervalli, tag di inferenza e incertezza conservati; nessuna interpolazione tra osservazioni."
+    },
+    "wikidata": {
+      "name": "Wikidata",
+      "url": "https://www.wikidata.org/",
+      "license": "CC0",
+      "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+      "citation": "Wikidata e contributori: P122, P31, P36, P1082, P2046.",
+      "note": "Le affermazioni senza qualificatori temporali sono mostrate separatamente: non certificano la situazione nell’anno della carta."
+    }
+  }
+}

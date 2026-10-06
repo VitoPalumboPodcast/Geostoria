@@ -1,5 +1,6 @@
 import { closestHistoricalYear, loadBoundaries, SOURCES, sourceAttribution, escapeHtml, countryAliases } from './sources.js?v=20261006-nation1';
-import { loadSymbolsCatalog, selectCountrySymbols, renderCountrySymbols } from './symbols.js?v=20261006-nation1';
+import { loadSymbolsCatalog, selectCountrySymbols, renderCountrySymbols, renderCountrySymbolPreview } from './symbols.js?v=20261006-country1';
+import { loadCountryArchives, buildCountryProfile, renderCountryProfile } from './country-data.js?v=20261006-country1';
 
 // Chiave CARTO Basemaps limitata al dominio vitopalumbopodcast.github.io.
 const CARTO_BASEMAP_KEY = 'cb1_4c5a_1_0417a143fc768f340fec2f48';
@@ -226,18 +227,21 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
                 const precision = Number(feature.properties?.BORDERPRECISION);
                 const precisionLabel = ({1:'Confini approssimativi',2:'Confini moderatamente precisi',3:'Confini definiti dal diritto internazionale'})[precision];
                 const popupHeader=`<strong>${escapeHtml(name)}</strong><p>Confini: ${escapeHtml(result.dateLabel)}</p>${precisionLabel ? `<p>${precisionLabel}</p>` : ''}<p>Fonte: <a href="${source.url}" target="_blank" rel="noopener noreferrer">${source.name}</a></p>`;
-                layer.bindPopup(`<div class="historical-popup nation-popup">${popupHeader}<p class="nation-symbol-note">Caricamento dei simboli…</p></div>`,{maxWidth:320,minWidth:260,maxHeight:340,keepInView:true});
+                layer.bindPopup(`<div class="historical-popup nation-popup">${popupHeader}<p class="nation-symbol-note">Caricamento dei simboli e dei dati…</p></div>`,{maxWidth:380,minWidth:260,maxHeight:Math.max(160,Math.min(420,map.getSize().y-110)),keepInView:true});
                 layer.on('popupopen',async e=>{
                     const popup=e.popup;
                     try {
-                        const catalog=await loadSymbolsCatalog();
                         const names=[name,...(feature.properties?.SEARCH_NAMES||[]),...countryAliases(name,targetYear)];
-                        const records=selectCountrySymbols(catalog.records,names,targetYear);
+                        const [symbols,archives]=await Promise.allSettled([loadSymbolsCatalog(),loadCountryArchives()]);
+                        const symbolsHtml=symbols.status==='fulfilled'?renderCountrySymbols(selectCountrySymbols(symbols.value.records,names,targetYear)):'<p>Simboli non disponibili. Riapri la scheda per riprovare.</p>';
+                        const previewHtml=symbols.status==='fulfilled'?renderCountrySymbolPreview(selectCountrySymbols(symbols.value.records,names,targetYear)):'';
+                        const factsHtml=archives.status==='fulfilled'?renderCountryProfile(buildCountryProfile(archives.value,names,targetYear,result.mapDate)):'<p>Dati delle nazioni non disponibili. Riapri la scheda per riprovare.</p>';
                         // Aggiorna soltanto il popup ancora aperto e appartenente a questa carta.
                         if(requestId!==latestLoad || !popup.isOpen())return;
-                        popup.setContent(`<div class="historical-popup nation-popup">${popupHeader}${renderCountrySymbols(records)}</div>`);
+                        popup.setContent(`<div class="historical-popup nation-popup">${popupHeader}${previewHtml}${factsHtml}<details class="nation-symbols-disclosure"><summary>Bandiere, stemmi e crediti</summary>${symbolsHtml}</details></div>`);
                     } catch(error) {
-                        if(requestId===latestLoad && popup.isOpen())popup.setContent(`<div class="historical-popup nation-popup">${popupHeader}<p>Simboli non disponibili. Riapri la scheda per riprovare.</p></div>`);
+                        console.warn('Scheda nazione non disponibile:',error);
+                        if(requestId===latestLoad && popup.isOpen())popup.setContent(`<div class="historical-popup nation-popup">${popupHeader}<p>Scheda non disponibile. Riaprila per riprovare.</p></div>`);
                     }
                 });
                 
