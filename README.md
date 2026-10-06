@@ -15,6 +15,10 @@ App web statica per esplorare eventi di geostoria su una mappa interattiva con t
 
 ## Dati e attribuzioni
 
+Il pannello **Bandiere, stemmi e sigilli** usa un catalogo locale di entità Wikidata (dati CC0) e immagini Wikimedia Commons (licenza propria per ogni file, con autore e link visibili). `data/symbols.json` conserva le associazioni, gli intervalli dei simboli, i riferimenti alle dichiarazioni Wikidata e i crediti. Non è un repertorio completo di tutte le civiltà. Il catalogo è aggiornabile con `node tools/download-symbols.mjs --refresh` e verificabile con `node --test tests/symbols.test.mjs`. Senza `--refresh` vengono riutilizzate le dichiarazioni Wikidata già scaricate nella cache locale.
+
+Le associazioni ai territori sono curate e limitate al periodo dello Stato; i simboli seguono i qualificatori temporali Wikidata o, quando mancanti, gli intervalli espliciti nel titolo del file Commons. Le immagini prive di data sono segnalate. Per Stati ancora esistenti, queste immagini non datate vengono mostrate solo negli eventi dal 2000 in poi, per evitare di proiettare varianti moderne su epoche precedenti. Immagini qualificate come fittizie sono escluse. Le date sono filtrate per anno e possono mostrare più varianti in un anno di transizione. Le immagini vengono caricate da Wikimedia solo alla visualizzazione; i metadati non dipendono da richieste live alle API.
+
 Le copie locali compresse e le relative licenze sono documentate in [data/README.md](data/README.md) e [data/manifest.json](data/manifest.json). CShapes ha licenza **CC BY-NC-SA 4.0**, quindi i suoi dati non sono destinati a uso commerciale senza ulteriore autorizzazione. La fonte e la licenza sono visibili nell'app.
 
 CShapes descrive confini politici riconosciuti, non l'avanzamento degli eserciti o le occupazioni temporanee. Per eventi che indicano solo l'anno, il mondo viene visualizzato al **1° gennaio**; aggiungere `mapDate: '1914-08-01'` a un evento per una data diversa nello stesso anno. CShapes-Europe è annuale. Historical Basemaps usa l'istantanea disponibile più vicina e indica esplicitamente il suo anno.

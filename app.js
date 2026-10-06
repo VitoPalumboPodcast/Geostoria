@@ -3,6 +3,7 @@ import { createAncientLayers } from './ancient-layers.js?v=20261006-layers1';
 import { SOURCES, escapeHtml, isAncientPeriod } from './sources.js?v=20261006-layers1';
 import { initializeTimeline, pausePlayback } from './timeline.js';
 import { historicalEvents } from './events.js?v=20260528-colonies';
+import { createSymbolsPanel } from './symbols.js?v=20261006-symbols1';
 
 const eventPanel = document.getElementById('event-panel');
 const eventEra = document.getElementById('event-era');
@@ -21,6 +22,7 @@ const layerInputs = Object.fromEntries(['pleiades','dare'].map(id => [id, docume
 let activeEvent = null;
 let selectionVersion = 0;
 let ancientLayers = null;
+const updateSymbols = createSymbolsPanel(document.getElementById('symbols-content'));
 
 function updateLayerStatus(status) {
     for (const [id, state] of Object.entries(status)) {
@@ -69,6 +71,7 @@ function updateEventPanel(event) {
     eventEra.textContent = event.eraText;
     eventTitle.textContent = event.title;
     eventDescription.textContent = event.description;
+    updateSymbols(event);
     countriesList.innerHTML = '';
 
     const groups = getEventFocusGroups(event);

@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     
     <!-- Stili Personalizzati -->
-    <link rel="stylesheet" href="style.css?v=20261006-layers1">
+    <link rel="stylesheet" href="style.css?v=20261006-symbols1">
 </head>
 <body>
     <div id="app-container">
@@ -60,6 +60,11 @@
                     <h3>Stati Coinvolti</h3>
                     <div id="countries-list" class="countries-list"></div>
                 </div>
+                <details id="symbols-panel" class="symbols-panel">
+                    <summary>Bandiere, stemmi e sigilli</summary>
+                    <p class="source-note">Simboli associati ai territori su <a href="https://www.wikidata.org" target="_blank" rel="noopener noreferrer">Wikidata</a> e Wikimedia Commons. Le varianti datate seguono l’anno dell’evento; le immagini senza data non certificano l’uso in quell’anno. Possono comparire più varianti.</p>
+                    <div id="symbols-content" aria-live="polite"></div>
+                </details>
                 <div id="cartography-source" class="cartography-source" aria-live="polite"></div>
             </div>
 
@@ -119,6 +124,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <!-- Entrypoint JavaScript App (ES Modules) -->
-    <script type="module" src="app.js?v=20261006-layers1"></script>
+    <script type="module" src="app.js?v=20261006-symbols1"></script>
 </body>
 </html>
