@@ -318,13 +318,17 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
             const end = movement.path[movement.path.length - 1];
             const beforeEnd = movement.path[movement.path.length - 2];
             const bearing = movementBearing(beforeEnd, end);
+            const arrowPos = [
+                beforeEnd[0] + (end[0] - beforeEnd[0]) * 0.72,
+                beforeEnd[1] + (end[1] - beforeEnd[1]) * 0.72
+            ];
             const arrowIcon = L.divIcon({
                 className: 'map-movement-arrow-container',
                 html: `<div class="map-movement-arrow" style="--movement-color:${color}; --movement-bearing:${bearing}deg" aria-hidden="true"></div>`,
                 iconSize: [28, 28],
                 iconAnchor: [14, 14]
             });
-            L.marker(end, {icon: arrowIcon, keyboard: false, interactive: false}).addTo(labelsLayer);
+            L.marker(arrowPos, {icon: arrowIcon, keyboard: false, interactive: false}).addTo(labelsLayer);
             L.circleMarker(movement.path[0], {
                 radius: 4,
                 color: '#ffffff',
