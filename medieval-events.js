@@ -63,8 +63,8 @@ export const medievalEvents = [
         eraText: "568 d.C.",
         description: "Guidati da Alboino, i Longobardi muovono dalla Pannonia, attraversano le Alpi orientali e occupano ampie parti della penisola. Pavia diventa la capitale del regno, mentre i ducati di Spoleto e Benevento formano la Langobardia Minor; territori bizantini continuano a separare e circondare i domini longobardi.",
         groups: [
-            { name: "Domini longobardi", color: "#d97706", countries: ["Lombards", "Lombard Kingdom"] },
-            { name: "Domini bizantini", color: "#7c3aed", countries: ["Byzantine", "Exarchate of Ravenna"] }
+            { name: "Domini longobardi", color: "#d97706", countries: ["Lombards", "Lombard Kingdom", "Lombard principalities", "Lombard duchies"] },
+            { name: "Domini bizantini", color: "#7c3aed", countries: ["Byzantine", "Byzantine Empire", "Eastern Roman Empire", "Exarchate of Ravenna"] }
         ],
         labels: [
             { text: "Langobardia Maior", pos: [45.3, 10.2], color: "#d97706" },
@@ -90,8 +90,8 @@ export const medievalEvents = [
         eraText: "VII–VIII secolo",
         description: "L'Egira del 622 segna l'inizio dell'era islamica. Dall'Arabia, i califfati estendono rapidamente il proprio dominio nel Vicino Oriente e nel Nord Africa; nel 711 iniziano la conquista della penisola iberica e nel 756 nasce l'Emirato di Cordova.",
         groups: [
-            { name: "Califfati islamici", color: "#059669", countries: ["Caliphate", "Rashidun", "Umayyad", "Abbasid"] },
-            { name: "Impero Bizantino", color: "#7c3aed", countries: ["Byzantine"] }
+            { name: "Califfati islamici", color: "#059669", countries: ["Caliphate", "Rashidun", "Umayyad", "Abbasid", "Hejaz"] },
+            { name: "Impero Bizantino", color: "#7c3aed", countries: ["Byzantine", "Byzantine Empire", "Eastern Roman Empire"] }
         ],
         labels: [
             { text: "Arabia", pos: [23.3, 44.0], color: "#059669" },
@@ -119,7 +119,7 @@ export const medievalEvents = [
         eraText: "728 d.C.",
         description: "Il re longobardo Liutprando dona Sutri e altri castelli della Tuscia al papa. L'episodio è tradizionalmente considerato il primo nucleo territoriale del Patrimonio di San Pietro e del futuro potere temporale pontificio.",
         groups: [
-            { name: "Regno longobardo", color: "#d97706", countries: ["Lombards", "Lombard Kingdom"] },
+            { name: "Regno longobardo", color: "#d97706", countries: ["Lombards", "Lombard Kingdom", "Lombard principalities", "Lombard duchies"] },
             { name: "Patrimonio di San Pietro", color: "#f8fafc", countries: ["Papal States", "Rome"] }
         ],
         labels: [{ text: "Regno longobardo", pos: [44.2, 10.8], color: "#d97706" }],
@@ -166,7 +166,7 @@ export const medievalEvents = [
         description: "Carlo Magno amplia il regno franco con campagne condotte su più fronti. Nel 774 conquista il regno longobardo e Pavia; tra il 772 e l'804 sottomette la Sassonia. Le marche di Bretagna, di Spagna e orientale organizzano le zone di frontiera. Le frecce rappresentano le principali direttrici militari e politiche, non singoli itinerari completi.",
         groups: [
             { name: "Regno dei Franchi", color: "#2563eb", countries: ["Carolingian", "Franks", "Frankish Kingdom"] },
-            { name: "Regno longobardo", color: "#d97706", countries: ["Lombards", "Lombard Kingdom"] },
+            { name: "Regno longobardo", color: "#d97706", countries: ["Lombards", "Lombard Kingdom", "Lombard principalities", "Lombard duchies"] },
             { name: "Sassoni", color: "#dc2626", countries: ["Saxons", "Saxony"] }
         ],
         labels: [
@@ -197,7 +197,7 @@ export const medievalEvents = [
         description: "A Roma papa Leone III incorona Carlo Magno imperatore. La restaurazione dell'autorità imperiale in Occidente poggia su contee e marche e su funzionari itineranti, i missi dominici. Aquisgrana diventa il principale centro politico e culturale carolingio.",
         groups: [
             { name: "Impero Carolingio", color: "#2563eb", countries: ["Carolingian", "Franks", "Frankish Kingdom"] },
-            { name: "Impero Bizantino", color: "#7c3aed", countries: ["Byzantine"] },
+            { name: "Impero Bizantino", color: "#7c3aed", countries: ["Byzantine", "Byzantine Empire", "Eastern Roman Empire"] },
             { name: "Califfato Abbaside", color: "#059669", countries: ["Abbasid", "Caliphate"] }
         ],
         labels: [
@@ -321,7 +321,7 @@ export const medievalEvents = [
         eraText: "10 agosto 955",
         description: "Ottone I sconfigge gli Ungari presso Augusta. La vittoria interrompe le grandi incursioni magiare nell'Europa centrale e rafforza decisamente il prestigio del sovrano sassone.",
         groups: [
-            { name: "Regno dei Franchi orientali", color: "#2563eb", countries: ["East Francia", "Germany"] },
+            { name: "Regno dei Franchi orientali", color: "#2563eb", countries: ["East Francia", "Germany", "Holy Roman Empire"] },
             { name: "Ungari", color: "#dc2626", countries: ["Magyars", "Hungary"] }
         ],
         labels: [{ text: "Regno di Ottone I", pos: [51.0, 10.0], color: "#2563eb" }],
@@ -403,7 +403,7 @@ export const medievalEvents = [
         description: "Dopo essersi insediati a Melfi nel 1041, i capi normanni dividono le conquiste pugliesi. Nel 1043 Guglielmo Braccio di Ferro d'Altavilla è riconosciuto conte e Melfi diventa il principale centro politico della presenza normanna nel Mezzogiorno.",
         groups: [
             { name: "Contea normanna di Puglia", color: "#2563eb", countries: ["Normans", "County of Apulia", "Apulia"] },
-            { name: "Territori bizantini", color: "#7c3aed", countries: ["Byzantine", "Catepanate of Italy"] }
+            { name: "Territori bizantini", color: "#7c3aed", countries: ["Byzantine", "Byzantine Empire", "Eastern Roman Empire", "Catepanate of Italy"] }
         ],
         labels: [{ text: "Normanni in Puglia", pos: [41.1, 16.0], color: "#2563eb" }],
         markers: [{ title: "Melfi: centro della conquista normanna", pos: [40.996, 15.656], icon: "castle", color: "#2563eb" }],
@@ -477,4 +477,3 @@ export const medievalEvents = [
         bounds: [[34.5, 10.5], [43, 19]]
     }
 ];
-

@@ -111,6 +111,28 @@ function getFeatureSearchName(feature) {
     return [...new Set([rawName, ...(feature.properties?.SEARCH_NAMES || []), getFeatureName(feature)])].join(' ');
 }
 
+function normalizeTerritoryName(value) {
+    return String(value || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, ' ')
+        .trim();
+}
+
+// Un solo criterio di corrispondenza per colorazione, passaggio del mouse e clic sui tag.
+export function featureMatchesCountries(feature, countryNames = []) {
+    const searchName = normalizeTerritoryName(getFeatureSearchName(feature));
+    return countryNames.some(name => {
+        const keyword = normalizeTerritoryName(name);
+        return keyword.length > 0 && searchName.includes(keyword);
+    });
+}
+
+export function findMatchingGroup(feature, groups = []) {
+    return groups.find(group => featureMatchesCountries(feature, group.countries || [])) || null;
+}
+
 // Funzione di stile per ogni feature geografica
 function countryFeatureStyle(feature) {
     const countryName = getFeatureSearchName(feature);
@@ -118,14 +140,12 @@ function countryFeatureStyle(feature) {
     
     // 1. Se c'è un'evidenziazione attiva specifica (es. click su un tag fazione)
     if (activeHighlightedCountries && activeHighlightedCountries.length > 0) {
-        const isSelected = activeHighlightedCountries.some(keyword => {
-            return countryName.toLowerCase().includes(keyword.toLowerCase());
-        });
+        const isSelected = featureMatchesCountries(feature, activeHighlightedCountries);
         
         if (isSelected) {
             // Trova se appartiene a una fazione per conservare il suo colore
             let groupColor = isLightTheme ? "#d97706" : "#f59e0b"; // Default oro
-            const matchedGroup = activeGroups.find(g => g.countries.some(k => countryName.toLowerCase().includes(k.toLowerCase())));
+            const matchedGroup = findMatchingGroup(feature, activeGroups);
             if (matchedGroup) {
                 groupColor = matchedGroup.color;
             }
@@ -153,9 +173,7 @@ function countryFeatureStyle(feature) {
     // 2. Altrimenti mostra tutte le fazioni/gruppi con i loro colori dedicati
     let matchedGroup = null;
     for (const group of activeGroups) {
-        const match = group.countries.some(keyword => {
-            return countryName.toLowerCase().includes(keyword.toLowerCase());
-        });
+        const match = featureMatchesCountries(feature, group.countries);
         if (match) {
             matchedGroup = group;
             break;
@@ -208,9 +226,7 @@ export function highlightCountries(countryNames) {
             
             // Porta gli elementi evidenziati in primo piano
             const name = getFeatureSearchName(layer.feature);
-            const isHighlighted = activeHighlightedCountries.some(keyword => {
-                return name.toLowerCase().includes(keyword.toLowerCase());
-            });
+            const isHighlighted = featureMatchesCountries(layer.feature, activeHighlightedCountries);
             if (isHighlighted && typeof layer.bringToFront === 'function') {
                 layer.bringToFront();
             }
@@ -278,8 +294,7 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
                         const l = e.target;
                         
                         // Trova se fa parte delle fazioni attive
-                        const searchName = getFeatureSearchName(feature).toLowerCase();
-                        const belongsToGroup = activeGroups.some(g => g.countries.some(k => searchName.includes(k.toLowerCase())));
+                        const belongsToGroup = Boolean(findMatchingGroup(feature, activeGroups));
                         const isLightTheme = document.body.classList.contains('light-theme');
                         
                         l.setStyle({
@@ -406,10 +421,7 @@ export function zoomToInvolvedCountries(countryNames) {
 
     let targetLayers = [];
     geoJsonLayer.eachLayer(layer => {
-        const name = getFeatureSearchName(layer.feature);
-        const match = countryNames.some(keyword => {
-            return name.toLowerCase().includes(keyword.toLowerCase());
-        });
+        const match = featureMatchesCountries(layer.feature, countryNames);
         if (match) {
             targetLayers.push(layer);
         }
@@ -429,4 +441,3 @@ export function zoomToInvolvedCountries(countryNames) {
         });
     }
 }
-

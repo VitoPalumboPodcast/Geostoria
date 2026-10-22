@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {historicalEvents} from '../events.js';
 import {medievalEvents} from '../medieval-events.js';
+import {featureMatchesCountries, findMatchingGroup} from '../map.js';
 
 const expectedIds = [
     'fall-western-roman-empire', 'post-roman-population-movements', 'lombard-invasion-italy',
@@ -55,3 +56,13 @@ test('migrazioni ed espansioni hanno frecce geografiche valide', () => {
     }
 });
 
+test('i domini longobardi e bizantini del 568 corrispondono ai nomi della carta del 600', () => {
+    const event = medievalEvents.find(item => item.id === 'lombard-invasion-italy');
+    const lombards = {properties: {NAME: 'Lombard principalities'}};
+    const byzantines = {properties: {NAME: 'Eastern Roman Empire'}};
+
+    assert.equal(findMatchingGroup(lombards, event.groups)?.name, 'Domini longobardi');
+    assert.equal(findMatchingGroup(byzantines, event.groups)?.name, 'Domini bizantini');
+    assert.equal(featureMatchesCountries(lombards, event.groups[0].countries), true);
+    assert.equal(featureMatchesCountries(byzantines, event.groups[1].countries), true);
+});
