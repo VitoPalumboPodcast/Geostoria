@@ -19,6 +19,17 @@ let activeHighlightedCountries = [];
 let currentYearLoaded = null;
 let latestLoad = 0;
 
+const EVENT_ICON_CLASSES = {
+    landmark: 'fa-landmark', mosque: 'fa-mosque', route: 'fa-route', city: 'fa-city',
+    church: 'fa-church', shield: 'fa-shield-halved', crown: 'fa-crown', monument: 'fa-monument',
+    scroll: 'fa-scroll', ship: 'fa-ship', horse: 'fa-horse', castle: 'fa-chess-rook',
+    handshake: 'fa-handshake', wheat: 'fa-wheat-awn', market: 'fa-store', flag: 'fa-flag'
+};
+
+function safeMapColor(color, fallback = '#2563eb') {
+    return /^#[0-9a-f]{6}$/i.test(color || '') ? color : fallback;
+}
+
 // Funzione hash per generare colori stabili basati sul nome del paese
 function stringToColor(str) {
     let hash = 0;
@@ -280,12 +291,29 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
             }
         }).addTo(map);
 
+        // Aggiungi simboli puntuali per battaglie, città, trattati, incoronazioni e trasformazioni.
+        (options.markers || []).forEach(marker => {
+            const color = safeMapColor(marker.color);
+            const iconClass = EVENT_ICON_CLASSES[marker.icon] || 'fa-location-dot';
+            const symbolIcon = L.divIcon({
+                className: 'map-event-symbol-container',
+                html: `<div class="map-event-symbol" style="--event-symbol-color: ${color};"><i class="fas ${iconClass}" aria-hidden="true"></i></div>`,
+                iconSize: [42, 42],
+                iconAnchor: [21, 21]
+            });
+
+            L.marker(marker.pos, {icon: symbolIcon, keyboard: false})
+                .bindTooltip(escapeHtml(marker.title || ''), {direction: 'top', offset: [0, -18]})
+                .addTo(labelsLayer);
+        });
+
         // Aggiungi le scritte (etichette di testo) geografiche dell'evento corrente sulla mappa
         if (eventLabels && eventLabels.length > 0) {
             eventLabels.forEach(label => {
+                const color = safeMapColor(label.color);
                 const labelIcon = L.divIcon({
                     className: 'map-text-label-container',
-                    html: `<div class="map-text-label" style="border-color: ${label.color}; color: ${label.color};">${label.text}</div>`,
+                    html: `<div class="map-text-label" style="border-color: ${color}; color: ${color};">${escapeHtml(label.text)}</div>`,
                     iconSize: [160, 42],
                     iconAnchor: [80, 21]
                 });
@@ -347,3 +375,4 @@ export function zoomToInvolvedCountries(countryNames) {
         });
     }
 }
+

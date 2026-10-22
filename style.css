@@ -193,6 +193,45 @@ body.light-theme .map-text-label {
         0 0 0 1px rgba(15, 23, 42, 0.14);
 }
 
+.map-event-symbol-container {
+    background: none;
+    border: 0;
+}
+
+.map-event-symbol {
+    position: relative;
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border: 3px solid #fff;
+    border-radius: 50% 50% 50% 12%;
+    background: var(--event-symbol-color);
+    color: #fff;
+    font-size: 1rem;
+    transform: rotate(-45deg);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.5);
+}
+
+.map-event-symbol::after {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    border-radius: inherit;
+}
+
+.map-event-symbol i {
+    position: relative;
+    z-index: 1;
+    transform: rotate(45deg);
+}
+
+body.light-theme .map-event-symbol {
+    border-color: #fff;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.38);
+}
+
 /* Glassmorphism utility */
 .glass {
     background: var(--card-bg);
@@ -858,3 +897,4 @@ body.light-theme .duration-bar.active {
         flex: 1;
     }
 }
+

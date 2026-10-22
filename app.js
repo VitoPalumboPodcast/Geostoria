@@ -2,7 +2,7 @@ import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, chan
 import { createAncientLayers } from './ancient-layers.js?v=20261006-nation1';
 import { SOURCES, escapeHtml, isAncientPeriod } from './sources.js?v=20261006-nation1';
 import { initializeTimeline, pausePlayback } from './timeline.js?v=20261006-timeline2';
-import { historicalEvents } from './events.js?v=20260528-colonies';
+import { historicalEvents } from './events.js?v=20261022-medieval1';
 import { createSymbolsPanel } from './symbols.js?v=20261006-country1';
 
 const eventPanel = document.getElementById('event-panel');
@@ -137,7 +137,7 @@ async function handleEventChange(event, {focus = true} = {}) {
             event.labels || [],
             showLoader,
             hideLoader,
-            {source: mapSourceSelect.value, mapDate: event.mapDate}
+            {source: mapSourceSelect.value, mapDate: event.mapDate, markers: event.markers || []}
         );
         if (version !== selectionVersion || !info) return;
         updateSourceInfo(info);
@@ -205,3 +205,4 @@ document.addEventListener('DOMContentLoaded', () => {
         changeMapTheme(isLight ? 'light' : 'dark');
     });
 });
+

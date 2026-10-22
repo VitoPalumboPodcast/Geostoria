@@ -1,3 +1,5 @@
+import { medievalEvents } from './medieval-events.js';
+
 // Database degli eventi storici con gruppi (fazioni) e scritte geografiche
 export const historicalEvents = [
     {
@@ -179,25 +181,7 @@ export const historicalEvents = [
         bounds: [[25, -12], [55, 45]], // Impero Romano e confini
         duration: { start: -27, end: 476, label: "Impero Romano d'Occidente (27 a.C. - 476 d.C.)" }
     },
-    {
-        id: "charlemagne-empire",
-        title: "Carlo Magno e il Sacro Romano Impero",
-        year: 800,
-        eraText: "800 d.C.",
-        description: "Nella notte di Natale dell'anno 800, Carlo Magno viene incoronato Imperatore a Roma da Papa Leone III, restaurando l'Impero in Occidente (Impero Carolingio). A est, il Califfato Abbaside vive la sua età dell'oro a Baghdad sotto Harun al-Rashid, mentre l'Impero Bizantino domina il Mediterraneo orientale.",
-        groups: [
-            { name: "Impero Carolingio", color: "#3b82f6", countries: ["Carolingian"] },
-            { name: "Impero Bizantino", color: "#a855f7", countries: ["Byzantine"] },
-            { name: "Califfato Abbaside", color: "#10b981", countries: ["Abbasid", "Caliphate"] }
-        ],
-        labels: [
-            { text: "Impero Carolingio (Carlo Magno)", pos: [48.0, 8.0], color: "#3b82f6" },
-            { text: "Impero Bizantino (Oriente)", pos: [39.0, 26.0], color: "#a855f7" },
-            { text: "Califfato Abbaside (Baghdad)", pos: [30.0, 45.0], color: "#10b981" }
-        ],
-        bounds: [[25, -15], [60, 55]], // Europa e Medio Oriente
-        duration: { start: 751, end: 843, label: "Impero Carolingio (751 d.C. - 843 d.C.)" }
-    },
+    ...medievalEvents,
     {
         id: "mongol-empire-expansion",
         title: "L'Impero Mongolo di Gengis Khan",
@@ -368,3 +352,5 @@ export function getClosestEvent(year) {
         return Math.abs(curr.year - year) < Math.abs(prev.year - year) ? curr : prev;
     });
 }
+
+
