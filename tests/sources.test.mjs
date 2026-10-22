@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
-import {chooseBoundarySource,resolveMapDate,matchingFeatures,loadBoundaries,fetchGeoJson,countryAliases} from '../sources.js';
+import {chooseBoundarySource,resolveMapDate,matchingFeatures,loadBoundaries,fetchGeoJson,countryAliases,translateHistoricalName} from '../sources.js';
 const dataPath = name => new URL(`../data/${name}`, import.meta.url);
 
 test('copertura automatica e selezione esplicita non inventano confini fuori periodo', () => {
@@ -20,6 +20,14 @@ test('data cartografica valida, stesso anno, limiti inclusivi', () => {
     assert.equal(matchingFeatures(features,'cshapes-world',1914,'1914-06-30')[0],features[0]);
     assert.equal(matchingFeatures(features,'cshapes-world',1914,'1914-07-01')[0],features[1]);
     assert.ok(countryAliases('Germany',1914).includes('German Empire'));
+});
+test('i nomi storici inglesi sono presentati in italiano', () => {
+    assert.equal(translateHistoricalName('Eastern Roman Empire'), "Impero Romano d'Oriente");
+    assert.equal(translateHistoricalName('Northmen'), 'Normanni (Vichinghi)');
+    assert.equal(translateHistoricalName('Carolingian Empire'), 'Impero Carolingio');
+    assert.equal(translateHistoricalName('Emirate of Córdoba'), 'Emirato di Cordova');
+    assert.equal(translateHistoricalName('Kingdom of France'), 'Regno di Francia');
+    assert.equal(translateHistoricalName('Seljuk Empire'), 'Impero selgiuchide');
 });
 test('copie compresse integre e geometrie/date utilizzabili', async () => {
     const manifest = JSON.parse(await readFile(dataPath('manifest.json')));
@@ -73,3 +81,4 @@ test('caricamento gzip, cache, data precisa e ripiego dichiarato su errore', asy
         assert.equal(attempts,2,'un échec ne doit pas bloquer la nouvelle tentative');
     } finally { globalThis.fetch = originalFetch; }
 });
+

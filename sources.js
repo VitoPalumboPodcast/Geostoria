@@ -15,6 +15,148 @@ export const isAncientPeriod = year => year >= -800 && year <= 700;
 export function escapeHtml(value) {
     return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
+
+const HISTORICAL_NAME_TRANSLATIONS = Object.freeze({
+    'Eastern Roman Empire': "Impero Romano d'Oriente",
+    'Western Roman Empire': "Impero Romano d'Occidente",
+    'Byzantine Empire': 'Impero Bizantino',
+    'Northmen': 'Normanni (Vichinghi)',
+    'Anglo-Saxons': 'Anglosassoni',
+    'Frankish Kingdom': 'Regno dei Franchi',
+    'Franks': 'Franchi',
+    'Visigoths': 'Visigoti',
+    'Visigothic Kingdom': 'Regno dei Visigoti',
+    'Ostrogoths': 'Ostrogoti',
+    'Burgundians': 'Burgundi',
+    'Vandals': 'Vandali',
+    'Saxons': 'Sassoni',
+    'Lombard principalities': 'Principati longobardi',
+    'Lombard duchies': 'Ducati longobardi',
+    'Carolingian Empire': 'Impero Carolingio',
+    'East Francia': 'Francia orientale',
+    'West Francia': 'Francia occidentale',
+    'Holy Roman Empire': 'Sacro Romano Impero',
+    'Papal States': 'Stato della Chiesa',
+    'Emirate of Córdoba': 'Emirato di Cordova',
+    'Caliphate of Córdoba': 'Califfato di Cordova',
+    'Umayyad Caliphate': 'Califfato omayyade',
+    'Abbasid Caliphate': 'Califfato abbaside',
+    'Fatimid Caliphate': 'Califfato fatimide',
+    'Idrisid Caliphate': 'Califfato idriside',
+    'Aghlabid Emirate': 'Emirato aghlabide',
+    'Emirate of Sicily': 'Emirato di Sicilia',
+    'Buwayhid Emirates': 'Emirati buwayhidi',
+    'Buyid Emirate': 'Emirato buyide',
+    'Ghaznavid Emirate': 'Emirato ghaznavide',
+    'Samanid Empire': 'Impero samanide',
+    'Seljuk Empire': 'Impero selgiuchide',
+    'Sasanian Empire': 'Impero sasanide',
+    'Sasanian dependencies': 'Dipendenze sasanidi',
+    'Avars': 'Avari',
+    'Bulgars': 'Bulgari',
+    'Danube Bulgars': 'Bulgari del Danubio',
+    'Volga Bulgars': 'Bulgari del Volga',
+    'Bulgar Khanate': 'Khanato bulgaro',
+    'Magyars': 'Ungari',
+    'Khazars': 'Cazari',
+    'Pechenegs': 'Peceneghi',
+    'Peshemegs': 'Peceneghi',
+    'Oghuz Turks': 'Turchi Oghuz',
+    'Slavs': 'Slavi',
+    'Proto-Slavs': 'Protoslavi',
+    'Slavic tribes': 'Tribù slave',
+    'Slavonic tribes': 'Tribù slave',
+    'Baltic tribes': 'Tribù baltiche',
+    'Celtic kingdoms': 'Regni celtici',
+    'Swedes and Goths': 'Svedesi e Goti',
+    'Danes': 'Danesi',
+    'Frisians': 'Frisoni',
+    'Picts': 'Pitti',
+    'Scots': 'Scoti',
+    'Welsh': 'Gallesi',
+    'Kingdom of Norway': 'Regno di Norvegia',
+    'Kingdom of France': 'Regno di Francia',
+    'Kingdom of Georgia': 'Regno di Georgia',
+    'Georgian Kingdom': 'Regno georgiano',
+    'Croatian kingdom': 'Regno di Croazia',
+    'Duchy of Benevento': 'Ducato di Benevento',
+    'Duchy of Swabia': 'Ducato di Svevia',
+    'Kyivan Rus': "Rus' di Kyiv",
+    'Kievan Rus': "Rus' di Kyiv",
+    "Rus' Khaganate": "Kaganato della Rus'",
+    'Great Moravia': 'Grande Moravia',
+    'Icelandic Commonwealth': 'Commonwealth islandese',
+    'Imperial Japan (Fujiwara)': 'Giappone imperiale (Fujiwara)',
+    'Tang Empire': 'Impero Tang',
+    'Song Empire': 'Impero Song',
+    'Tibetan Empire': 'Impero tibetano',
+    'Khmer Empire': 'Impero Khmer',
+    'Srivijaya Empire': 'Impero di Srivijaya',
+    'Toltec Empire': 'Impero tolteco',
+    'Tiahuanaco Empire': 'Impero di Tiwanaku',
+    'Huari Empire': 'Impero Wari',
+    'Maya states': 'Stati maya',
+    'Maya city-states': 'Città-stato maya',
+    'Mesoamerican city-states and chiefdoms': 'Città-stato e domini mesoamericani',
+    'Hindu states': 'Stati indù',
+    'Hindu kingdoms': 'Regni indù',
+    'minor Hindu and Buddhist states': 'Stati minori indù e buddhisti',
+    'minor states under Indian influence': 'Stati minori di influenza indiana',
+    'Islamic city-states': 'Città-stato islamiche',
+    'Rajput kingdoms': 'Regni rajput',
+    'Rajput Clans and Small States': 'Clan rajput e piccoli stati',
+    'Bantu peoples': 'Popoli bantu',
+    'Ethiopian Highland Peoples': "Popoli dell'altopiano etiopico",
+    'Saharan Nomadic Tribes': 'Tribù nomadi sahariane',
+    'Amazon hunter-gatherers': 'Cacciatori-raccoglitori amazzonici',
+    'Andean hunter-gatherers': 'Cacciatori-raccoglitori andini',
+    'Arctic marine mammal hunters': 'Cacciatori artici di mammiferi marini',
+    'Australian aboriginal hunter-gatherers': 'Cacciatori-raccoglitori aborigeni australiani',
+    'Caribbean hunter-gatherers': 'Cacciatori-raccoglitori caraibici',
+    'Desert hunter-gatherers': 'Cacciatori-raccoglitori del deserto',
+    'Eastern North American hunter-gatherers': 'Cacciatori-raccoglitori del Nord America orientale',
+    'Finno-Ugric taiga hunter-gatherers': 'Cacciatori-raccoglitori ugrofinnici della taiga',
+    'North American Pacific foraging, hunting and fishing peoples': 'Popoli raccoglitori, cacciatori e pescatori del Pacifico nordamericano',
+    'Paleo-Siberian hunter-gatherers': 'Cacciatori-raccoglitori paleosiberiani',
+    'Pampas cultures': 'Culture delle Pampas',
+    'Patagonian shellfish and marine mammal hunters': 'Cacciatori e raccoglitori marini della Patagonia',
+    'Plain bison hunters': 'Cacciatori di bisonti delle pianure',
+    'Plateau fichers and hunter gatherers': "Pescatori e cacciatori-raccoglitori dell'altopiano",
+    'Savanna hunter-gatherers': 'Cacciatori-raccoglitori della savana',
+    'Shellfish gatherers': 'Raccoglitori di molluschi',
+    'Subarctic forest hunter-gatherers': 'Cacciatori-raccoglitori delle foreste subartiche',
+    'Tasmanian hunter-gatherers': 'Cacciatori-raccoglitori tasmaniani',
+    'West African cereal farmers': "Coltivatori di cereali dell'Africa occidentale"
+});
+
+const ITALIAN_PLACE_NAMES = Object.freeze({
+    France: 'Francia', Norway: 'Norvegia', Sicily: 'Sicilia', Córdoba: 'Cordova',
+    Cordoba: 'Cordova', Tiflis: 'Tbilisi', Polotsk: 'Polack'
+});
+
+export function translateHistoricalName(name) {
+    const value = String(name || '').trim();
+    if (!value) return 'Territorio';
+    if (HISTORICAL_NAME_TRANSLATIONS[value]) return HISTORICAL_NAME_TRANSLATIONS[value];
+    const place = root => ITALIAN_PLACE_NAMES[root] || root;
+    const patterns = [
+        [/^Empire of (.+)$/i, root => `Impero di ${place(root)}`],
+        [/^(.+) Empire$/i, root => `Impero ${place(root)}`],
+        [/^Kingdom of (.+)$/i, root => `Regno di ${place(root)}`],
+        [/^(.+) Kingdom$/i, root => `Regno ${place(root)}`],
+        [/^Emirate of (.+)$/i, root => `Emirato di ${place(root)}`],
+        [/^(.+) Emirate$/i, root => `Emirato ${place(root)}`],
+        [/^(.+) Caliphate$/i, root => `Califfato ${place(root)}`],
+        [/^(.+) Khanate$/i, root => `Khanato ${place(root)}`],
+        [/^Principality of (.+)$/i, root => `Principato di ${place(root)}`],
+        [/^(.+) confederation$/i, root => `Confederazione ${place(root)}`]
+    ];
+    for (const [pattern, format] of patterns) {
+        const match = value.match(pattern);
+        if (match) return format(match[1]);
+    }
+    return value;
+}
 export function closestHistoricalYear(year) {
     return HISTORICAL_YEARS.reduce((a, b) => Math.abs(b - year) < Math.abs(a - year) ? b : a);
 }
@@ -115,3 +257,4 @@ export async function loadBoundaries(year, preference = 'auto', requestedDate) {
         return historicalMap(year, 'CShapes non è disponibile: è mostrata la carta globale di riferimento.');
     }
 }
+

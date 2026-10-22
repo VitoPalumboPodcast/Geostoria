@@ -1,4 +1,4 @@
-import { closestHistoricalYear, loadBoundaries, SOURCES, sourceAttribution, escapeHtml, countryAliases } from './sources.js?v=20261006-nation1';
+import { closestHistoricalYear, loadBoundaries, SOURCES, sourceAttribution, escapeHtml, countryAliases, translateHistoricalName } from './sources.js?v=20261023-italian1';
 import { loadSymbolsCatalog, selectCountrySymbols, renderCountrySymbols, renderCountrySymbolPreview } from './symbols.js?v=20261006-country1';
 import { loadCountryArchives, buildCountryProfile, renderCountryProfile } from './country-data.js?v=20261006-country1';
 
@@ -107,7 +107,8 @@ export function getClosestAvailableYear(year) {
 
 // Restituisce il nome del file geojson per un anno specifico
 function getFeatureSearchName(feature) {
-    return (feature.properties?.SEARCH_NAMES || [getFeatureName(feature)]).join(' ');
+    const rawName = getFeatureRawName(feature);
+    return [...new Set([rawName, ...(feature.properties?.SEARCH_NAMES || []), getFeatureName(feature)])].join(' ');
 }
 
 // Funzione di stile per ogni feature geografica
@@ -188,10 +189,14 @@ function styleFeature(feature) {
 }
 
 // Trova il nome del paese all'interno della feature GeoJSON
-export function getFeatureName(feature) {
+export function getFeatureRawName(feature) {
     if (!feature || !feature.properties) return "Sconosciuto";
     const props = feature.properties;
     return props.NAME || props.Name || props.name || props.SUBJECTO || props.subjecto || "Territorio";
+}
+
+export function getFeatureName(feature) {
+    return translateHistoricalName(getFeatureRawName(feature));
 }
 
 // Seleziona ed evidenzia paesi specifici
@@ -242,6 +247,7 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
             attribution: sourceAttribution(result.sourceId),
             style: styleFeature,
             onEachFeature: (feature, layer) => {
+                const rawName = getFeatureRawName(feature);
                 const name = getFeatureName(feature);
                 
                 // Popup con nome dello stato
@@ -252,7 +258,7 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
                 layer.on('popupopen',async e=>{
                     const popup=e.popup;
                     try {
-                        const names=[name,...(feature.properties?.SEARCH_NAMES||[]),...countryAliases(name,targetYear)];
+                        const names=[rawName,name,...(feature.properties?.SEARCH_NAMES||[]),...countryAliases(rawName,targetYear)];
                         const [symbols,archives]=await Promise.allSettled([loadSymbolsCatalog(),loadCountryArchives()]);
                         const symbolsHtml=symbols.status==='fulfilled'?renderCountrySymbols(selectCountrySymbols(symbols.value.records,names,targetYear)):'<p>Simboli non disponibili. Riapri la scheda per riprovare.</p>';
                         const previewHtml=symbols.status==='fulfilled'?renderCountrySymbolPreview(selectCountrySymbols(symbols.value.records,names,targetYear)):'';
