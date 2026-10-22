@@ -137,7 +137,12 @@ async function handleEventChange(event, {focus = true} = {}) {
             event.labels || [],
             showLoader,
             hideLoader,
-            {source: mapSourceSelect.value, mapDate: event.mapDate, markers: event.markers || []}
+            {
+                source: mapSourceSelect.value,
+                mapDate: event.mapDate,
+                markers: event.markers || [],
+                movements: event.movements || []
+            }
         );
         if (version !== selectionVersion || !info) return;
         updateSourceInfo(info);

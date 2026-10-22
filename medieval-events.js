@@ -21,6 +21,69 @@ export const medievalEvents = [
         bounds: [[34, -11], [56, 31]]
     },
     {
+        id: "post-roman-population-movements",
+        title: "Stanziamento dei regni romano-germanici",
+        year: 500,
+        eraText: "V–VI secolo",
+        description: "Dopo la dissoluzione dell'autorità imperiale in Occidente, diversi popoli consolidano nuovi regni. I Franchi si espandono dal basso Reno in Gallia; Angli e Sassoni attraversano il Mare del Nord verso la Britannia; Visigoti, Ostrogoti e Vandali si stabiliscono rispettivamente nella penisola iberica, in Italia e nell'Africa settentrionale. Le frecce sintetizzano processi avvenuti in tempi differenti, non un'unica migrazione simultanea.",
+        groups: [
+            { name: "Franchi", color: "#2563eb", countries: ["Franks", "Frankish Kingdom"] },
+            { name: "Anglosassoni", color: "#0891b2", countries: ["Anglo-Saxons", "England"] },
+            { name: "Visigoti", color: "#7c3aed", countries: ["Visigoths", "Visigothic Kingdom"] },
+            { name: "Ostrogoti", color: "#d97706", countries: ["Ostrogoths", "Ostrogothic Kingdom"] },
+            { name: "Vandali", color: "#dc2626", countries: ["Vandals", "Vandal Kingdom"] }
+        ],
+        labels: [
+            { text: "Franchi", pos: [49.0, 3.0], color: "#2563eb" },
+            { text: "Regni anglosassoni", pos: [52.5, -1.2], color: "#0891b2" },
+            { text: "Visigoti", pos: [40.0, -4.0], color: "#7c3aed" },
+            { text: "Ostrogoti", pos: [44.3, 11.0], color: "#d97706" },
+            { text: "Vandali", pos: [35.9, 10.1], color: "#dc2626" }
+        ],
+        markers: [
+            { title: "Soissons: centro franco", pos: [49.3817, 3.3236], icon: "crown", color: "#2563eb" },
+            { title: "Ravenna: capitale ostrogota", pos: [44.4184, 12.2035], icon: "landmark", color: "#d97706" },
+            { title: "Toledo: centro del regno visigoto", pos: [39.8628, -4.0273], icon: "castle", color: "#7c3aed" },
+            { title: "Cartagine: centro del regno vandalo", pos: [36.8529, 10.3230], icon: "ship", color: "#dc2626" }
+        ],
+        movements: [
+            { title: "Espansione dei Franchi dal basso Reno alla Gallia", color: "#2563eb", path: [[51.0, 6.2], [50.2, 4.7], [49.38, 3.32], [48.86, 2.35]] },
+            { title: "Migrazione di Angli e Sassoni verso la Britannia", color: "#0891b2", path: [[54.8, 9.5], [54.0, 6.0], [52.8, 1.2]] },
+            { title: "Stanziamento visigoto nella penisola iberica", color: "#7c3aed", path: [[44.8, 4.8], [42.0, 1.5], [39.86, -4.03]] },
+            { title: "Stanziamento ostrogoto in Italia", color: "#d97706", path: [[47.0, 19.0], [46.0, 14.5], [44.42, 12.20]] },
+            { title: "Percorso dei Vandali verso Cartagine", color: "#dc2626", path: [[48.0, 9.0], [44.0, 2.0], [40.4, -3.7], [36.85, 10.32]], dashed: true }
+        ],
+        bounds: [[33, -12], [57, 23]],
+        duration: { start: 476, end: 568, label: "Stanziamento dei regni romano-germanici (V–VI secolo)" }
+    },
+    {
+        id: "lombard-invasion-italy",
+        title: "Invasione longobarda dell'Italia",
+        year: 568,
+        eraText: "568 d.C.",
+        description: "Guidati da Alboino, i Longobardi muovono dalla Pannonia, attraversano le Alpi orientali e occupano ampie parti della penisola. Pavia diventa la capitale del regno, mentre i ducati di Spoleto e Benevento formano la Langobardia Minor; territori bizantini continuano a separare e circondare i domini longobardi.",
+        groups: [
+            { name: "Domini longobardi", color: "#d97706", countries: ["Lombards", "Lombard Kingdom"] },
+            { name: "Domini bizantini", color: "#7c3aed", countries: ["Byzantine", "Exarchate of Ravenna"] }
+        ],
+        labels: [
+            { text: "Langobardia Maior", pos: [45.3, 10.2], color: "#d97706" },
+            { text: "Ducati di Spoleto e Benevento", pos: [42.0, 13.5], color: "#d97706" }
+        ],
+        markers: [
+            { title: "Pavia: capitale del regno longobardo", pos: [45.1847, 9.1582], icon: "crown", color: "#d97706" },
+            { title: "Spoleto: ducato longobardo", pos: [42.7342, 12.7380], icon: "castle", color: "#d97706" },
+            { title: "Benevento: ducato longobardo", pos: [41.1298, 14.7826], icon: "castle", color: "#d97706" }
+        ],
+        movements: [
+            { title: "Dalla Pannonia attraverso le Alpi orientali", color: "#d97706", path: [[46.8, 18.3], [46.3, 14.5], [46.1, 13.4], [45.18, 9.16]] },
+            { title: "Espansione verso il Ducato di Spoleto", color: "#d97706", path: [[45.18, 9.16], [43.8, 11.2], [42.73, 12.74]], dashed: true },
+            { title: "Espansione verso il Ducato di Benevento", color: "#d97706", path: [[42.73, 12.74], [41.13, 14.78]], dashed: true }
+        ],
+        bounds: [[39, 7], [48, 20]],
+        duration: { start: 568, end: 774, label: "Regno longobardo in Italia (568–774)" }
+    },
+    {
         id: "islam-birth-expansion",
         title: "Nascita ed espansione dell'Islam",
         year: 622,
@@ -39,6 +102,12 @@ export const medievalEvents = [
             { title: "Mecca: origine della predicazione islamica", pos: [21.4225, 39.8262], icon: "mosque", color: "#059669" },
             { title: "Medina: meta dell'Egira (622)", pos: [24.4672, 39.6024], icon: "route", color: "#059669" },
             { title: "Cordova: emirato indipendente dal 756", pos: [37.8882, -4.7794], icon: "city", color: "#0f766e" }
+        ],
+        movements: [
+            { title: "Conquiste verso Siria e Palestina (632–638)", color: "#059669", path: [[24.47, 39.60], [29.4, 36.0], [33.51, 36.29], [31.78, 35.22]] },
+            { title: "Espansione verso Egitto e Nord Africa", color: "#059669", path: [[31.78, 35.22], [30.04, 31.24], [31.20, 29.92], [32.9, 13.2], [36.85, 10.32]] },
+            { title: "Espansione omayyade fino ad al-Andalus", color: "#0f766e", path: [[36.85, 10.32], [35.2, 0.0], [35.96, -5.60], [37.89, -4.78]] },
+            { title: "Espansione verso Asia centrale e valle dell'Indo", color: "#059669", path: [[33.51, 36.29], [34.5, 44.0], [36.5, 61.0], [39.77, 64.42], [34.56, 69.21]], dashed: true }
         ],
         bounds: [[12, -12], [46, 53]],
         duration: { start: 610, end: 750, label: "Nascita ed espansione dell'Islam (VII–VIII secolo)" }
@@ -72,6 +141,9 @@ export const medievalEvents = [
             { text: "Al-Andalus", pos: [39.2, -4.2], color: "#059669" }
         ],
         markers: [{ title: "Area della battaglia tra Tours e Poitiers", pos: [46.73, 0.55], icon: "shield", color: "#dc2626" }],
+        movements: [
+            { title: "Avanzata omayyade da al-Andalus oltre i Pirenei", color: "#059669", path: [[37.89, -4.78], [41.4, 2.2], [43.0, 0.2], [44.84, -0.58], [46.73, 0.55]] }
+        ],
         bounds: [[37, -10], [52, 10]]
     },
     {
@@ -85,6 +157,37 @@ export const medievalEvents = [
         markers: [{ title: "Soissons: elezione di Pipino il Breve", pos: [49.3817, 3.3236], icon: "crown", color: "#2563eb" }],
         bounds: [[42, -3], [53, 14]],
         duration: { start: 751, end: 987, label: "Dinastia carolingia nel regno dei Franchi (751–987)" }
+    },
+    {
+        id: "carolingian-expansion",
+        title: "Espansione militare di Carlo Magno",
+        year: 774,
+        eraText: "768–814 d.C.",
+        description: "Carlo Magno amplia il regno franco con campagne condotte su più fronti. Nel 774 conquista il regno longobardo e Pavia; tra il 772 e l'804 sottomette la Sassonia. Le marche di Bretagna, di Spagna e orientale organizzano le zone di frontiera. Le frecce rappresentano le principali direttrici militari e politiche, non singoli itinerari completi.",
+        groups: [
+            { name: "Regno dei Franchi", color: "#2563eb", countries: ["Carolingian", "Franks", "Frankish Kingdom"] },
+            { name: "Regno longobardo", color: "#d97706", countries: ["Lombards", "Lombard Kingdom"] },
+            { name: "Sassoni", color: "#dc2626", countries: ["Saxons", "Saxony"] }
+        ],
+        labels: [
+            { text: "Regno franco", pos: [48.5, 5.0], color: "#2563eb" },
+            { text: "Sassonia", pos: [52.3, 9.0], color: "#dc2626" },
+            { text: "Regno d'Italia", pos: [44.6, 10.5], color: "#d97706" }
+        ],
+        markers: [
+            { title: "Pavia: conquista del regno longobardo (774)", pos: [45.1847, 9.1582], icon: "shield", color: "#2563eb" },
+            { title: "Aquisgrana: centro del potere carolingio", pos: [50.7753, 6.0839], icon: "landmark", color: "#2563eb" },
+            { title: "Barcellona: centro della Marca di Spagna", pos: [41.3874, 2.1686], icon: "castle", color: "#2563eb" }
+        ],
+        movements: [
+            { title: "Campagna d'Italia e conquista di Pavia (774)", color: "#2563eb", path: [[48.86, 2.35], [47.0, 5.5], [45.18, 9.16]] },
+            { title: "Guerre contro i Sassoni (772–804)", color: "#dc2626", path: [[50.78, 6.08], [51.5, 7.5], [52.4, 9.3]] },
+            { title: "Espansione verso la Marca di Spagna", color: "#7c3aed", path: [[45.0, 3.0], [42.7, 1.2], [41.39, 2.17]], dashed: true },
+            { title: "Espansione verso la Marca orientale", color: "#059669", path: [[49.0, 9.0], [48.2, 13.0], [48.21, 16.37]], dashed: true },
+            { title: "Marca di Bretagna", color: "#0891b2", path: [[48.2, 2.0], [48.1, -1.7], [48.2, -4.0]], dashed: true }
+        ],
+        bounds: [[39, -7], [55, 18]],
+        duration: { start: 768, end: 814, label: "Campagne di Carlo Magno (768–814)" }
     },
     {
         id: "charlemagne-empire",
@@ -183,6 +286,14 @@ export const medievalEvents = [
             { title: "Sicilia islamica e incursioni nel Mediterraneo", pos: [38.1157, 13.3615], icon: "ship", color: "#059669" },
             { title: "Incastellamento nell'Europa centro-occidentale", pos: [45.5, 9.5], icon: "castle", color: "#d97706" }
         ],
+        movements: [
+            { title: "Incursioni normanne dalla Scandinavia alla Senna", color: "#2563eb", path: [[59.0, 10.5], [56.0, 5.0], [50.8, 1.0], [49.44, 1.10]] },
+            { title: "Incursioni normanne verso le isole britanniche", color: "#2563eb", path: [[58.5, 8.0], [56.0, 1.0], [54.0, -1.0]], dashed: true },
+            { title: "Scorrerie ungare verso la Germania", color: "#dc2626", path: [[47.5, 19.0], [48.5, 15.0], [49.5, 10.0]] },
+            { title: "Scorrerie ungare verso l'Italia settentrionale", color: "#dc2626", path: [[47.5, 19.0], [46.5, 15.5], [45.5, 10.0]], dashed: true },
+            { title: "Espansione islamica in Sicilia", color: "#059669", path: [[36.85, 10.32], [37.0, 11.8], [38.12, 13.36], [37.08, 15.29]] },
+            { title: "Incursioni saracene verso Roma", color: "#059669", path: [[38.12, 13.36], [40.0, 13.0], [41.90, 12.50]], dashed: true }
+        ],
         bounds: [[34, -12], [61, 26]],
         duration: { start: 800, end: 1000, label: "Seconde invasioni e incastellamento (IX–X secolo)" }
     },
@@ -215,6 +326,9 @@ export const medievalEvents = [
         ],
         labels: [{ text: "Regno di Ottone I", pos: [51.0, 10.0], color: "#2563eb" }],
         markers: [{ title: "Lechfeld: vittoria di Ottone I", pos: [48.25, 10.85], icon: "shield", color: "#dc2626" }],
+        movements: [
+            { title: "Avanzata ungara verso Lechfeld", color: "#dc2626", path: [[47.5, 19.0], [48.0, 15.5], [48.25, 10.85]] }
+        ],
         bounds: [[45, 5], [54, 18]]
     },
     {

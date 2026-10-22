@@ -30,6 +30,15 @@ function safeMapColor(color, fallback = '#2563eb') {
     return /^#[0-9a-f]{6}$/i.test(color || '') ? color : fallback;
 }
 
+function movementBearing(from, to) {
+    const lat1 = from[0] * Math.PI / 180;
+    const lat2 = to[0] * Math.PI / 180;
+    const deltaLon = (to[1] - from[1]) * Math.PI / 180;
+    const y = Math.sin(deltaLon) * Math.cos(lat2);
+    const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(deltaLon);
+    return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+}
+
 // Funzione hash per generare colori stabili basati sul nome del paese
 function stringToColor(str) {
     let hash = 0;
@@ -290,6 +299,41 @@ export async function loadYearMap(year, eventGroups = [], eventLabels = [], onSt
                 });
             }
         }).addTo(map);
+
+        // Disegna i movimenti prima di etichette e simboli, così restano leggibili ma non li coprono.
+        (options.movements || []).forEach(movement => {
+            if (!Array.isArray(movement.path) || movement.path.length < 2) return;
+            const color = safeMapColor(movement.color, '#dc2626');
+            const line = L.polyline(movement.path, {
+                color,
+                weight: 4,
+                opacity: 0.88,
+                dashArray: movement.dashed ? '10 8' : null,
+                lineCap: 'round',
+                lineJoin: 'round',
+                className: 'map-movement-line'
+            }).bindTooltip(escapeHtml(movement.title || 'Movimento'), {sticky: true});
+            line.addTo(labelsLayer);
+
+            const end = movement.path[movement.path.length - 1];
+            const beforeEnd = movement.path[movement.path.length - 2];
+            const bearing = movementBearing(beforeEnd, end);
+            const arrowIcon = L.divIcon({
+                className: 'map-movement-arrow-container',
+                html: `<div class="map-movement-arrow" style="--movement-color:${color}; --movement-bearing:${bearing}deg" aria-hidden="true"></div>`,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+            L.marker(end, {icon: arrowIcon, keyboard: false, interactive: false}).addTo(labelsLayer);
+            L.circleMarker(movement.path[0], {
+                radius: 4,
+                color: '#ffffff',
+                weight: 2,
+                fillColor: color,
+                fillOpacity: 1,
+                interactive: false
+            }).addTo(labelsLayer);
+        });
 
         // Aggiungi simboli puntuali per battaglie, città, trattati, incoronazioni e trasformazioni.
         (options.markers || []).forEach(marker => {

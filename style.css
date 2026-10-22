@@ -232,6 +232,31 @@ body.light-theme .map-event-symbol {
     box-shadow: 0 4px 14px rgba(15, 23, 42, 0.38);
 }
 
+.map-movement-line {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.75));
+}
+
+.map-movement-arrow-container {
+    background: none;
+    border: 0;
+}
+
+.map-movement-arrow {
+    width: 0;
+    height: 0;
+    border-right: 9px solid transparent;
+    border-bottom: 23px solid var(--movement-color);
+    border-left: 9px solid transparent;
+    transform: rotate(var(--movement-bearing));
+    transform-origin: 50% 50%;
+    filter:
+        drop-shadow(1px 0 0 #fff)
+        drop-shadow(-1px 0 0 #fff)
+        drop-shadow(0 1px 0 #fff)
+        drop-shadow(0 -1px 0 #fff)
+        drop-shadow(0 2px 3px rgba(0, 0, 0, 0.55));
+}
+
 /* Glassmorphism utility */
 .glass {
     background: var(--card-bg);
