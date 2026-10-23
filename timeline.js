@@ -66,6 +66,15 @@ export function initializeTimeline(options) {
     durationsContainer = document.getElementById('timeline-durations');
     playBtn = document.getElementById('play-btn');
     voiceToggleBtn = document.getElementById('voice-toggle-btn');
+    if (!speechAvailable()) {
+        voiceEnabled = false;
+        voiceToggleBtn.disabled = true;
+        voiceToggleBtn.classList.remove('active');
+        voiceToggleBtn.setAttribute('aria-pressed', 'false');
+        voiceToggleBtn.title = 'Sintesi vocale non disponibile in questo browser';
+        voiceToggleBtn.setAttribute('aria-label', voiceToggleBtn.title);
+        voiceToggleBtn.innerHTML = '<i class="fas fa-volume-xmark"></i>';
+    }
     previousViewportWidth = wrapper.clientWidth;
     onEventSelectedCallback = options.onEventSelected;
 
@@ -562,6 +571,12 @@ function cancelNarration() {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
 }
 
+function speechAvailable() {
+    return typeof window !== 'undefined'
+        && 'speechSynthesis' in window
+        && typeof SpeechSynthesisUtterance !== 'undefined';
+}
+
 function chooseItalianVoice() {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
     const voices = window.speechSynthesis.getVoices();
@@ -571,7 +586,7 @@ function chooseItalianVoice() {
 }
 
 function speakEvent(event, onComplete) {
-    if (!voiceEnabled || typeof window === 'undefined' || !('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return false;
+    if (!voiceEnabled || !speechAvailable()) return false;
     cancelNarration();
     const token = narrationToken;
     const utterance = new SpeechSynthesisUtterance(narrationText(event));
