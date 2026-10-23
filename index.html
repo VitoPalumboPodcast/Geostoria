@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     
     <!-- Stili Personalizzati -->
-    <link rel="stylesheet" href="style-movements-20261022.css">
+    <link rel="stylesheet" href="style-causal-20261023.css">
 </head>
 <body class="light-theme">
     <div id="app-container">
@@ -60,6 +60,11 @@
                     <h3>Stati Coinvolti</h3>
                     <div id="countries-list" class="countries-list"></div>
                 </div>
+                <div id="related-events-container" class="related-events-container hidden">
+                    <h3>Eventi collegati</h3>
+                    <p class="related-events-intro">Seleziona un evento per seguirne le premesse o le conseguenze.</p>
+                    <div id="related-events-list" class="related-events-list"></div>
+                </div>
                 <details id="symbols-panel" class="symbols-panel">
                     <summary>Bandiere, stemmi e sigilli</summary>
                     <p class="source-note">Simboli associati ai territori su <a href="https://www.wikidata.org" target="_blank" rel="noopener noreferrer">Wikidata</a> e Wikimedia Commons. Le varianti datate seguono l’anno dell’evento; le immagini senza data non certificano l’uso in quell’anno. Possono comparire più varianti.</p>
@@ -90,6 +95,8 @@
             <div id="timeline-controls" class="glass">
                 <div class="control-group">
                     <button id="play-btn" title="Riproduci cronologia"><i class="fas fa-play"></i></button>
+                    <button id="previous-event-btn" title="Evento storico precedente" aria-label="Evento storico precedente"><i class="fas fa-backward-step"></i></button>
+                    <button id="next-event-btn" title="Evento storico successivo" aria-label="Evento storico successivo"><i class="fas fa-forward-step"></i></button>
                     <span class="control-divider"></span>
                     <button id="zoom-out-btn" title="Zoom indietro timeline"><i class="fas fa-search-minus"></i></button>
                     <button id="zoom-in-btn" title="Zoom avanti timeline"><i class="fas fa-search-plus"></i></button>
@@ -124,6 +131,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <!-- Entrypoint JavaScript App (ES Modules) -->
-    <script type="module" src="app-highlights-20261023.js"></script>
+    <script type="module" src="app-causal-20261023.js"></script>
 </body>
 </html>

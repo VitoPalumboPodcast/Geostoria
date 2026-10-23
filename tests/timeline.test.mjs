@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {timelineScrollLimits,clampTimelinePosition} from '../timeline.js';
+import {timelineScrollLimits,clampTimelinePosition,adjacentEventIndex} from '../timeline.js';
 const minYear=-3100,maxYear=2030;
 test('primo e ultimo anno centrabili anche con asse più stretto del viewport',()=>{
  for(const width of [390,900,1280,1920])for(const scale of [.15,.35,1,4]) {
@@ -25,4 +25,10 @@ test('zoom consecutivi mantengono il 2010 al centro fino alla scala massima',()=
    assert.ok(Math.abs(offset+(2010-minYear)*scale-width/2)<1e-8);
   }
  }
+});
+test('navigazione precedente e successiva rispetta gli estremi della cronologia',()=>{
+ assert.equal(adjacentEventIndex(4,1,10),5);
+ assert.equal(adjacentEventIndex(4,-1,10),3);
+ assert.equal(adjacentEventIndex(0,-1,10),0);
+ assert.equal(adjacentEventIndex(9,1,10),9);
 });

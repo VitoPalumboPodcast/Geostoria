@@ -1,8 +1,9 @@
 import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map.js?v=20261006-light1';
 import { createAncientLayers } from './ancient-layers.js?v=20261006-nation1';
 import { SOURCES, escapeHtml, isAncientPeriod } from './sources.js?v=20261006-nation1';
-import { initializeTimeline, pausePlayback } from './timeline.js?v=20261006-timeline2';
+import { initializeTimeline, pausePlayback, selectEvent } from './timeline.js?v=20261006-timeline2';
 import { historicalEvents } from './events.js?v=20261022-medieval1';
+import { getRelatedEventLinks } from './event-links.js';
 import { createSymbolsPanel } from './symbols.js?v=20261006-country1';
 
 const eventPanel = document.getElementById('event-panel');
@@ -13,6 +14,8 @@ const closePanelBtn = document.getElementById('close-panel-btn');
 const countriesList = document.getElementById('countries-list');
 const countriesListContainer = document.getElementById('countries-list-container');
 const countriesListTitle = document.querySelector('.countries-list-container h3');
+const relatedEventsContainer = document.getElementById('related-events-container');
+const relatedEventsList = document.getElementById('related-events-list');
 const mapLoader = document.getElementById('map-loader');
 const yearValue = document.getElementById('year-value');
 const boundaryValue = document.getElementById('boundary-value');
@@ -73,6 +76,22 @@ function updateEventPanel(event) {
     eventDescription.textContent = event.description;
     updateSymbols(event);
     countriesList.innerHTML = '';
+    relatedEventsList.innerHTML = '';
+
+    const relatedLinks = getRelatedEventLinks(event.id);
+    relatedEventsContainer.classList.toggle('hidden', relatedLinks.length === 0);
+    relatedLinks.forEach(link => {
+        const target = historicalEvents.find(item => item.id === link.eventId);
+        if (!target) return;
+        const button = document.createElement('button');
+        button.className = 'related-event-link';
+        button.innerHTML = `<span class="related-event-heading"><i class="fas fa-link" aria-hidden="true"></i>${escapeHtml(target.title)}</span><span class="related-event-direction">${link.direction === 'premessa' ? 'Premessa' : 'Conseguenza'}</span><span class="related-event-reason">${escapeHtml(link.text)}</span>`;
+        button.addEventListener('click', () => {
+            pausePlayback();
+            selectEvent(target.id, true);
+        });
+        relatedEventsList.appendChild(button);
+    });
 
     const groups = getEventFocusGroups(event);
     const fallbackCountries = getEventFocusCountries(event);

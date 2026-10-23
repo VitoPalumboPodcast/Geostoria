@@ -87,6 +87,7 @@ body {
     color: var(--text-main);
     font-family: var(--font-body);
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     -webkit-font-smoothing: antialiased;
 }
@@ -96,6 +97,7 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+    height: 100dvh;
     width: 100vw;
 }
 
@@ -356,6 +358,29 @@ body.light-theme .map-event-symbol {
     gap: 8px;
 }
 
+.related-events-container {
+    border-top: 1px solid var(--border-color);
+    padding-top: 16px;
+}
+
+.related-events-container h3 { font: 600 .95rem var(--font-display); }
+.related-events-intro { margin: 6px 0 10px; color: var(--text-muted); font-size: .78rem; line-height: 1.45; }
+.related-events-list { display: grid; gap: 8px; }
+.related-event-link {
+    width: 100%;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background: rgba(99,102,241,.07);
+    color: var(--text-main);
+    padding: 10px 11px;
+    cursor: pointer;
+    text-align: left;
+}
+.related-event-link:hover { border-color: var(--primary-color); background: rgba(99,102,241,.14); }
+.related-event-heading { display: flex; align-items: center; gap: 7px; font-weight: 700; font-size: .8rem; }
+.related-event-direction { color: var(--primary-color); font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; }
+.related-event-reason { display: block; margin-top: 5px; color: var(--text-muted); font-size: .74rem; line-height: 1.45; }
+
 .country-tag {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--tag-color, var(--border-color));
@@ -446,7 +471,7 @@ body.light-theme .map-event-symbol {
 
 /* Sezione Inferiore: Timeline */
 #timeline-section {
-    height: 180px;
+    height: 250px;
     background-color: var(--timeline-bg);
     border-top: 1px solid var(--border-color);
     display: flex;
@@ -494,6 +519,8 @@ body.light-theme .map-event-symbol {
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-main);
 }
+
+#timeline-controls button:disabled { opacity: .32; cursor: default; }
 
 #timeline-controls button#play-btn {
     background: var(--primary-color);
@@ -834,8 +861,8 @@ body.light-theme .duration-bar.active {
     .map-info { top:12px; right:12px; bottom:auto; left:auto; max-width:calc(100% - 80px); }
     #map-layers-panel { left:12px; top:92px; width:280px; max-width:calc(100% - 24px); max-height:calc(100% - 110px); }
     #timeline-section {
-        height: 210px;
-        padding: 10px 12px 14px;
+        height: clamp(250px, 42dvh, 310px);
+        padding: 10px 12px calc(18px + env(safe-area-inset-bottom));
     }
 
     #timeline-controls {
@@ -907,11 +934,12 @@ body.light-theme .duration-bar.active {
     .control-group {
         width: 100%;
         justify-content: space-between;
+        gap: 2px;
     }
 
     #timeline-controls button {
-        width: 34px;
-        height: 34px;
+        width: 38px;
+        height: 38px;
     }
 
     .timeline-speed-control {

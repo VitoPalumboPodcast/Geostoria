@@ -72,6 +72,8 @@ export function initializeTimeline(options) {
     document.getElementById('zoom-in-btn').addEventListener('click', () => zoomTimeline(1.3));
     document.getElementById('zoom-out-btn').addEventListener('click', () => zoomTimeline(1 / 1.3));
     document.getElementById('reset-timeline-btn').addEventListener('click', resetTimelineZoom);
+    document.getElementById('previous-event-btn').addEventListener('click', () => selectAdjacentEvent(-1));
+    document.getElementById('next-event-btn').addEventListener('click', () => selectAdjacentEvent(1));
     
     // Configura riproduzione
     playBtn.addEventListener('click', togglePlayback);
@@ -477,6 +479,11 @@ export function selectEvent(eventId, triggerCallback = true) {
     }
     
     const activeEvent = historicalEvents.find(e => e.id === eventId);
+    const activeIndex = historicalEvents.findIndex(e => e.id === eventId);
+    const previousButton = document.getElementById('previous-event-btn');
+    const nextButton = document.getElementById('next-event-btn');
+    if (previousButton) previousButton.disabled = activeIndex <= 0;
+    if (nextButton) nextButton.disabled = activeIndex < 0 || activeIndex >= historicalEvents.length - 1;
     if (activeEvent) {
         // Ricentra timeline sull'evento selezionato
         centerTimelineOnYear(activeEvent.year, true);
@@ -486,6 +493,21 @@ export function selectEvent(eventId, triggerCallback = true) {
             onEventSelectedCallback(activeEvent);
         }
     }
+}
+
+export function selectAdjacentEvent(direction) {
+    const currentIndex = historicalEvents.findIndex(event => event.id === activeEventId);
+    if (currentIndex < 0) return;
+    const targetIndex = adjacentEventIndex(currentIndex, direction, historicalEvents.length);
+    if (targetIndex !== currentIndex) {
+        pausePlayback();
+        selectEvent(historicalEvents[targetIndex].id, true);
+    }
+}
+
+export function adjacentEventIndex(currentIndex, direction, eventCount) {
+    if (eventCount <= 0) return -1;
+    return Math.max(0, Math.min(eventCount - 1, currentIndex + Math.sign(direction)));
 }
 
 // Gestione Riproduzione Automatica (Play/Pause)
