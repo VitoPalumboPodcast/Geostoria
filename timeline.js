@@ -44,6 +44,7 @@ let ticksContainer = null;
 let eventsContainer = null;
 let durationsContainer = null; // Memorizza il container delle barre di durata
 let playBtn = null;
+let voiceToggleBtn = null;
 
 // Callbacks esterne
 let onEventSelectedCallback = null;
@@ -53,6 +54,8 @@ let isPlaying = false;
 let playbackTimer = null;
 let activeEventId = null;
 let playbackSpeed = 3; // Scala da 1 a 5
+let voiceEnabled = true;
+let narrationToken = 0;
 
 // Inizializza la timeline
 export function initializeTimeline(options) {
@@ -62,6 +65,7 @@ export function initializeTimeline(options) {
     eventsContainer = document.getElementById('timeline-events');
     durationsContainer = document.getElementById('timeline-durations');
     playBtn = document.getElementById('play-btn');
+    voiceToggleBtn = document.getElementById('voice-toggle-btn');
     previousViewportWidth = wrapper.clientWidth;
     onEventSelectedCallback = options.onEventSelected;
 
@@ -77,11 +81,12 @@ export function initializeTimeline(options) {
     
     // Configura riproduzione
     playBtn.addEventListener('click', togglePlayback);
+    voiceToggleBtn.addEventListener('click', toggleVoice);
     
     document.getElementById('speed-slider').addEventListener('input', (e) => {
         playbackSpeed = parseInt(e.target.value);
         if (isPlaying) {
-            restartPlaybackTimer();
+            beginPlaybackForCurrentEvent();
         }
     });
 
@@ -404,6 +409,7 @@ function renderTimeline() {
         // Click sul marker
         marker.addEventListener('click', (e) => {
             e.stopPropagation(); // Evita il drag trigger
+            pausePlayback();
             selectEvent(event.id, true);
         });
         
@@ -437,6 +443,7 @@ function renderTimeline() {
             bar.style.pointerEvents = 'auto';
             bar.addEventListener('click', (e) => {
                 e.stopPropagation();
+                pausePlayback();
                 selectEvent(event.id, true);
             });
             
@@ -524,29 +531,91 @@ export function startPlayback() {
     isPlaying = true;
     playBtn.innerHTML = '<i class="fas fa-pause"></i>';
     playBtn.classList.add('active');
-    restartPlaybackTimer();
+    beginPlaybackForCurrentEvent();
 }
 
 export function pausePlayback() {
-    if (!isPlaying) return;
-    isPlaying = false;
-    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-    playBtn.classList.remove('active');
+    cancelNarration();
     if (playbackTimer) {
         clearTimeout(playbackTimer);
         playbackTimer = null;
     }
+    if (!isPlaying) return;
+    isPlaying = false;
+    playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    playBtn.classList.remove('active');
 }
 
-function restartPlaybackTimer() {
+export function narrationText(event) {
+    const parts = [event?.eraText, event?.title, event?.description]
+        .filter(Boolean)
+        .map(value => String(value).trim().replace(/[.\s]+$/g, ''));
+    return parts.length ? `${parts.join('. ')}.` : '';
+}
+
+export function narrationRate(speed) {
+    return 0.82 + Math.max(1, Math.min(5, Number(speed) || 3)) * 0.07;
+}
+
+function cancelNarration() {
+    narrationToken += 1;
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+}
+
+function chooseItalianVoice() {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null;
+    const voices = window.speechSynthesis.getVoices();
+    return voices.find(voice => /^it[-_]/i.test(voice.lang) && voice.localService)
+        || voices.find(voice => /^it[-_]/i.test(voice.lang))
+        || null;
+}
+
+function speakEvent(event, onComplete) {
+    if (!voiceEnabled || typeof window === 'undefined' || !('speechSynthesis' in window) || typeof SpeechSynthesisUtterance === 'undefined') return false;
+    cancelNarration();
+    const token = narrationToken;
+    const utterance = new SpeechSynthesisUtterance(narrationText(event));
+    utterance.lang = 'it-IT';
+    utterance.rate = narrationRate(playbackSpeed);
+    utterance.pitch = 1;
+    const voice = chooseItalianVoice();
+    if (voice) utterance.voice = voice;
+    utterance.onend = () => {
+        if (token === narrationToken && isPlaying) onComplete();
+    };
+    utterance.onerror = () => {
+        if (token === narrationToken && isPlaying) onComplete();
+    };
+    window.speechSynthesis.speak(utterance);
+    return true;
+}
+
+function toggleVoice() {
+    voiceEnabled = !voiceEnabled;
+    voiceToggleBtn.classList.toggle('active', voiceEnabled);
+    voiceToggleBtn.setAttribute('aria-pressed', String(voiceEnabled));
+    voiceToggleBtn.title = voiceEnabled ? 'Disattiva sintesi vocale' : 'Attiva sintesi vocale';
+    voiceToggleBtn.setAttribute('aria-label', voiceToggleBtn.title);
+    voiceToggleBtn.innerHTML = `<i class="fas ${voiceEnabled ? 'fa-volume-high' : 'fa-volume-xmark'}"></i>`;
+    if (isPlaying) beginPlaybackForCurrentEvent();
+    else cancelNarration();
+}
+
+function beginPlaybackForCurrentEvent() {
     if (playbackTimer) {
         clearTimeout(playbackTimer);
+        playbackTimer = null;
     }
-    
-    // Calcola il delay in millisecondi in base alla velocità impostata (da 1 a 5)
-    // 5 -> 2.5s (veloce), 3 -> 5s (medio), 1 -> 9s (lento)
-    const delay = (6 - playbackSpeed) * 1800;
-    
+    cancelNarration();
+    const event = historicalEvents.find(item => item.id === activeEventId);
+    if (!event) return;
+    if (!speakEvent(event, () => scheduleNextEvent(650))) {
+        scheduleNextEvent((6 - playbackSpeed) * 1800);
+    }
+}
+
+function scheduleNextEvent(delay) {
+    if (playbackTimer) clearTimeout(playbackTimer);
     playbackTimer = setTimeout(() => {
         if (!isPlaying) return;
         
@@ -559,8 +628,6 @@ function restartPlaybackTimer() {
         
         const nextEvent = historicalEvents[nextIndex];
         selectEvent(nextEvent.id, true);
-        
-        // Prenota il prossimo scatto
-        restartPlaybackTimer();
+        beginPlaybackForCurrentEvent();
     }, delay);
 }

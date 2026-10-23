@@ -531,6 +531,8 @@ body.light-theme .map-event-symbol {
     background: var(--primary-hover);
 }
 
+#timeline-controls button#voice-toggle-btn.active { color: var(--primary-color); background: rgba(99,102,241,.12); }
+
 .control-divider {
     width: 1px;
     height: 16px;
@@ -938,7 +940,7 @@ body.light-theme .duration-bar.active {
     }
 
     #timeline-controls button {
-        width: 38px;
+        width: 32px;
         height: 38px;
     }
 

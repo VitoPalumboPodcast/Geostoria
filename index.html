@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
     
     <!-- Stili Personalizzati -->
-    <link rel="stylesheet" href="style-causal-20261023.css">
+    <link rel="stylesheet" href="style-voice-20261023.css">
 </head>
 <body class="light-theme">
     <div id="app-container">
@@ -95,6 +95,7 @@
             <div id="timeline-controls" class="glass">
                 <div class="control-group">
                     <button id="play-btn" title="Riproduci cronologia"><i class="fas fa-play"></i></button>
+                    <button id="voice-toggle-btn" class="active" title="Disattiva sintesi vocale" aria-label="Disattiva sintesi vocale" aria-pressed="true"><i class="fas fa-volume-high"></i></button>
                     <button id="previous-event-btn" title="Evento storico precedente" aria-label="Evento storico precedente"><i class="fas fa-backward-step"></i></button>
                     <button id="next-event-btn" title="Evento storico successivo" aria-label="Evento storico successivo"><i class="fas fa-forward-step"></i></button>
                     <span class="control-divider"></span>
@@ -131,6 +132,6 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     
     <!-- Entrypoint JavaScript App (ES Modules) -->
-    <script type="module" src="app-causal-20261023.js"></script>
+    <script type="module" src="app-voice-20261023.js"></script>
 </body>
 </html>

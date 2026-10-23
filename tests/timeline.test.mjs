@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {timelineScrollLimits,clampTimelinePosition,adjacentEventIndex} from '../timeline.js';
+import {timelineScrollLimits,clampTimelinePosition,adjacentEventIndex,narrationText,narrationRate} from '../timeline.js';
 const minYear=-3100,maxYear=2030;
 test('primo e ultimo anno centrabili anche con asse più stretto del viewport',()=>{
  for(const width of [390,900,1280,1920])for(const scale of [.15,.35,1,4]) {
@@ -31,4 +31,10 @@ test('navigazione precedente e successiva rispetta gli estremi della cronologia'
  assert.equal(adjacentEventIndex(4,-1,10),3);
  assert.equal(adjacentEventIndex(0,-1,10),0);
  assert.equal(adjacentEventIndex(9,1,10),9);
+});
+test('la sintesi vocale prepara un testo italiano completo e una velocità controllata',()=>{
+ const text=narrationText({eraText:'568 d.C.',title:'Invasione longobarda',description:'I Longobardi entrano in Italia'});
+ assert.equal(text,'568 d.C. Invasione longobarda. I Longobardi entrano in Italia.');
+ assert.ok(narrationRate(1)<narrationRate(5));
+ assert.equal(narrationRate(0),narrationRate(3));
 });
