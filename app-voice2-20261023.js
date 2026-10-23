@@ -1,9 +1,10 @@
 import { initializeMap, loadYearMap, fitMapBounds, zoomToInvolvedCountries, changeMapTheme } from './map-highlights-20261023.js';
 import { createAncientLayers } from './ancient-layers.js?v=20261006-nation1';
 import { SOURCES, escapeHtml, isAncientPeriod } from './sources.js?v=20261006-nation1';
-import { initializeTimeline, pausePlayback, selectEvent } from './timeline-voice2-20261023.js';
+import { initializeTimeline, pausePlayback, selectEvent, playEventSequence } from './timeline-voice2-20261023.js';
 import { historicalEvents } from './events-highlights-20261023.js';
 import { getRelatedEventLinks } from './event-links.js';
+import { getThematicPathsForEvent } from './thematic-paths.js';
 import { createSymbolsPanel } from './symbols.js?v=20261006-country1';
 
 const eventPanel = document.getElementById('event-panel');
@@ -16,6 +17,8 @@ const countriesListContainer = document.getElementById('countries-list-container
 const countriesListTitle = document.querySelector('.countries-list-container h3');
 const relatedEventsContainer = document.getElementById('related-events-container');
 const relatedEventsList = document.getElementById('related-events-list');
+const thematicPathsContainer = document.getElementById('thematic-paths-container');
+const thematicPathsList = document.getElementById('thematic-paths-list');
 const mapLoader = document.getElementById('map-loader');
 const yearValue = document.getElementById('year-value');
 const boundaryValue = document.getElementById('boundary-value');
@@ -77,6 +80,18 @@ function updateEventPanel(event) {
     updateSymbols(event);
     countriesList.innerHTML = '';
     relatedEventsList.innerHTML = '';
+    thematicPathsList.innerHTML = '';
+
+    const thematicPaths = getThematicPathsForEvent(event.id);
+    thematicPathsContainer.classList.toggle('hidden', thematicPaths.length === 0);
+    thematicPaths.forEach(path => {
+        const button = document.createElement('button');
+        button.className = 'thematic-path-button';
+        button.style.setProperty('--path-color', path.color);
+        button.innerHTML = `<span class="thematic-path-title"><i class="fas fa-route" aria-hidden="true"></i>${escapeHtml(path.shortTitle)}</span><span class="thematic-path-description">${escapeHtml(path.description)}</span>`;
+        button.addEventListener('click', () => playEventSequence(path.eventIds));
+        thematicPathsList.appendChild(button);
+    });
 
     const relatedLinks = getRelatedEventLinks(event.id);
     relatedEventsContainer.classList.toggle('hidden', relatedLinks.length === 0);

@@ -385,6 +385,23 @@ export const medievalEvents = [
         duration: { start: 950, end: 1100, label: "Ripresa europea tra X e XI secolo" }
     },
     {
+        id: "county-of-aversa",
+        title: "Contea normanna di Aversa",
+        year: 1030,
+        eraText: "1030 d.C.",
+        description: "Rainulfo Drengot ottiene la contea di Aversa dal duca di Napoli Sergio IV. È il primo insediamento politico normanno stabile nell'Italia meridionale. I Normanni arrivano in gruppi diversi come pellegrini, mercenari e combattenti: la freccia indica una direttrice complessiva, non una singola migrazione organizzata.",
+        groups: [
+            { name: "Contea normanna di Aversa", color: "#2563eb", countries: ["Normans", "Aversa", "Duchy of Naples"] },
+            { name: "Principati longobardi", color: "#d97706", countries: ["Duchy of Benevento", "Lombard duchies"] }
+        ],
+        labels: [{ text: "Primo insediamento normanno", pos: [41.0, 14.2], color: "#2563eb" }],
+        markers: [{ title: "Aversa: prima contea normanna stabile (1030)", pos: [40.973, 14.207], icon: "castle", color: "#2563eb" }],
+        movements: [
+            { title: "Movimenti di gruppi normanni verso il Mezzogiorno", color: "#2563eb", path: [[49.2, 0.2], [46.0, 6.5], [44.5, 9.2], [41.90, 12.50], [40.97, 14.21]], dashed: true }
+        ],
+        bounds: [[38, -1], [51.5, 17]]
+    },
+    {
         id: "constitutio-de-feudis",
         title: "Constitutio de Feudis",
         year: 1037,
@@ -407,6 +424,7 @@ export const medievalEvents = [
         ],
         labels: [{ text: "Normanni in Puglia", pos: [41.1, 16.0], color: "#2563eb" }],
         markers: [{ title: "Melfi: centro della conquista normanna", pos: [40.996, 15.656], icon: "castle", color: "#2563eb" }],
+        movements: [{ title: "Espansione normanna da Aversa verso Melfi e la Puglia", color: "#2563eb", path: [[40.973, 14.207], [41.1, 15.0], [40.996, 15.656]] }],
         bounds: [[38, 12], [43, 19]]
     },
     {
@@ -441,6 +459,7 @@ export const medievalEvents = [
             { title: "Hastings: vittoria di Guglielmo", pos: [50.911, 0.487], icon: "shield", color: "#dc2626" },
             { title: "Traversata dalla Normandia", pos: [49.28, -0.70], icon: "ship", color: "#2563eb" }
         ],
+        movements: [{ title: "La flotta di Guglielmo attraversa la Manica verso l'Inghilterra", color: "#2563eb", path: [[49.28, -0.70], [50.1, -0.3], [50.82, 0.34], [50.91, 0.49]] }],
         bounds: [[48, -6], [56, 3]]
     },
     {
@@ -458,6 +477,11 @@ export const medievalEvents = [
             { title: "Messina: sbarco normanno del 1061", pos: [38.1938, 15.5540], icon: "ship", color: "#2563eb" },
             { title: "Palermo: conquistata nel 1072", pos: [38.1157, 13.3615], icon: "castle", color: "#2563eb" },
             { title: "Noto: ultima roccaforte conquistata nel 1091", pos: [36.8924, 15.0652], icon: "flag", color: "#2563eb" }
+        ],
+        movements: [
+            { title: "Passaggio normanno dalla Calabria a Messina (1061)", color: "#2563eb", path: [[38.11, 15.65], [38.19, 15.55]] },
+            { title: "Avanzata verso Palermo (1072)", color: "#2563eb", path: [[38.19, 15.55], [37.8, 14.8], [38.12, 13.36]] },
+            { title: "Completamento della conquista verso Noto (1091)", color: "#2563eb", path: [[38.12, 13.36], [37.4, 14.2], [36.89, 15.07]], dashed: true }
         ],
         bounds: [[35, 11], [39.5, 16.7]],
         duration: { start: 1061, end: 1091, label: "Conquista normanna della Sicilia (1061–1091)" }

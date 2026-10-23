@@ -24,6 +24,8 @@ export const causalLinks = [
     { from: 'second-invasions-incastellamento', to: 'medieval-expansion-around-1000', text: 'La stabilizzazione successiva alle grandi incursioni accompagna la ripresa demografica, agricola e urbana.' },
     { from: 'capitulary-of-quierzy', to: 'constitutio-de-feudis', text: 'La crescente ereditarietà dei poteri aristocratici trova un ulteriore sviluppo nella tutela dei benefici dei vassalli minori.' },
     { from: 'duchy-of-normandy', to: 'battle-of-hastings', text: 'Il ducato fondato da Rollone diventa la base politica e militare della conquista normanna dell’Inghilterra.' },
+    { from: 'duchy-of-normandy', to: 'county-of-aversa', text: 'La mobilità di guerrieri e pellegrini normanni porta gruppi provenienti dall’area francese a inserirsi nei conflitti dell’Italia meridionale.' },
+    { from: 'county-of-aversa', to: 'normans-in-melfi', text: 'Il primo insediamento stabile di Aversa precede l’espansione di altri capi normanni verso Melfi e la Puglia.' },
     { from: 'normans-in-melfi', to: 'accord-of-melfi', text: 'Il consolidamento normanno in Puglia conduce al riconoscimento pontificio di Roberto il Guiscardo.' },
     { from: 'accord-of-melfi', to: 'norman-conquest-sicily', text: 'L’investitura papale legittima il progetto normanno di conquista della Sicilia musulmana.' },
     { from: 'norman-conquest-sicily', to: 'kingdom-of-sicily', text: 'L’unificazione delle conquiste insulari e continentali permette a Ruggero II di fondare il Regno di Sicilia.' },

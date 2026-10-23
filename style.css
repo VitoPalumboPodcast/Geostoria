@@ -363,6 +363,24 @@ body.light-theme .map-event-symbol {
     padding-top: 16px;
 }
 
+.thematic-paths-container { border-top: 1px solid var(--border-color); padding-top: 16px; }
+.thematic-paths-container h3 { font: 600 .95rem var(--font-display); margin-bottom: 10px; }
+.thematic-paths-list { display: grid; gap: 8px; }
+.thematic-path-button {
+    width: 100%;
+    border: 1px solid var(--path-color, var(--primary-color));
+    border-radius: 8px;
+    background: rgba(99,102,241,.08);
+    background: color-mix(in srgb, var(--path-color, var(--primary-color)) 10%, transparent);
+    color: var(--text-main);
+    padding: 10px 11px;
+    text-align: left;
+    cursor: pointer;
+}
+.thematic-path-button:hover { transform: translateY(-1px); background: color-mix(in srgb, var(--path-color, var(--primary-color)) 18%, transparent); }
+.thematic-path-title { display: flex; align-items: center; gap: 7px; font-weight: 700; font-size: .8rem; }
+.thematic-path-description { display: block; margin-top: 5px; color: var(--text-muted); font-size: .74rem; line-height: 1.45; }
+
 .related-events-container h3 { font: 600 .95rem var(--font-display); }
 .related-events-intro { margin: 6px 0 10px; color: var(--text-muted); font-size: .78rem; line-height: 1.45; }
 .related-events-list { display: grid; gap: 8px; }

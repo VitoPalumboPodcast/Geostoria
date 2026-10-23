@@ -56,6 +56,7 @@ let activeEventId = null;
 let playbackSpeed = 3; // Scala da 1 a 5
 let voiceEnabled = true;
 let narrationToken = 0;
+let activePlaybackSequence = null;
 
 // Inizializza la timeline
 export function initializeTimeline(options) {
@@ -537,6 +538,7 @@ function togglePlayback() {
 
 export function startPlayback() {
     if (isPlaying) return;
+    activePlaybackSequence = null;
     isPlaying = true;
     playBtn.innerHTML = '<i class="fas fa-pause"></i>';
     playBtn.classList.add('active');
@@ -549,10 +551,27 @@ export function pausePlayback() {
         clearTimeout(playbackTimer);
         playbackTimer = null;
     }
-    if (!isPlaying) return;
+    if (!isPlaying) {
+        activePlaybackSequence = null;
+        return;
+    }
     isPlaying = false;
+    activePlaybackSequence = null;
     playBtn.innerHTML = '<i class="fas fa-play"></i>';
     playBtn.classList.remove('active');
+}
+
+export function playEventSequence(eventIds) {
+    const validIds = [...new Set(eventIds || [])].filter(id => historicalEvents.some(event => event.id === id));
+    if (validIds.length === 0) return false;
+    pausePlayback();
+    activePlaybackSequence = validIds;
+    selectEvent(validIds[0], true);
+    isPlaying = true;
+    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    playBtn.classList.add('active');
+    beginPlaybackForCurrentEvent();
+    return true;
 }
 
 export function narrationText(event) {
@@ -634,14 +653,19 @@ function scheduleNextEvent(delay) {
     playbackTimer = setTimeout(() => {
         if (!isPlaying) return;
         
-        // Passa al prossimo evento
-        const currentIndex = historicalEvents.findIndex(e => e.id === activeEventId);
-        let nextIndex = currentIndex + 1;
-        if (nextIndex >= historicalEvents.length) {
-            nextIndex = 0; // ricomincia in loop
+        let nextEvent;
+        if (activePlaybackSequence) {
+            const sequenceIndex = activePlaybackSequence.indexOf(activeEventId);
+            const nextId = activePlaybackSequence[sequenceIndex + 1];
+            if (!nextId) {
+                pausePlayback();
+                return;
+            }
+            nextEvent = historicalEvents.find(event => event.id === nextId);
+        } else {
+            const currentIndex = historicalEvents.findIndex(e => e.id === activeEventId);
+            nextEvent = historicalEvents[(currentIndex + 1) % historicalEvents.length];
         }
-        
-        const nextEvent = historicalEvents[nextIndex];
         selectEvent(nextEvent.id, true);
         beginPlaybackForCurrentEvent();
     }, delay);

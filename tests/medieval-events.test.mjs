@@ -11,7 +11,7 @@ const expectedIds = [
     'death-of-charlemagne', 'treaty-of-verdun', 'capitulary-of-quierzy',
     'end-carolingian-unity', 'second-invasions-incastellamento', 'duchy-of-normandy',
     'battle-of-lechfeld', 'ottonian-empire', 'capetian-dynasty',
-    'medieval-expansion-around-1000', 'constitutio-de-feudis', 'normans-in-melfi',
+    'medieval-expansion-around-1000', 'county-of-aversa', 'constitutio-de-feudis', 'normans-in-melfi',
     'accord-of-melfi', 'battle-of-hastings', 'norman-conquest-sicily', 'kingdom-of-sicily'
 ];
 
